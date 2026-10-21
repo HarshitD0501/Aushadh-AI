@@ -470,11 +470,16 @@ class Client {
   }
 
   // 8. Reminders
-  async createReminder(payload) {
+  async createReminder(payload, idempotencyKey) {
+    const headers = { "Content-Type": "application/json" };
+    if (idempotencyKey) {
+      headers["Idempotency-Key"] = idempotencyKey;
+    }
+
     try {
       const res = await this.fetchWithTimeout(`/api/v1/reminders`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(payload)
       });
       if (res.ok) return await res.json();
@@ -486,16 +491,57 @@ class Client {
       daily_time: payload.daily_time,
       timezone: "Asia/Kolkata",
       status: "scheduled",
-      token: "tok-rem-" + Math.random().toString(36).slice(2)
+      management_token: "tok-rem-" + Math.random().toString(36).slice(2),
+      next_due_at: new Date(Date.now() + 86400000).toISOString()
     };
   }
 
+  async getReminderStatus(reminderId, managementToken) {
+    const headers = {};
+    if (managementToken) {
+      headers["Authorization"] = `Bearer ${managementToken}`;
+    }
+
+    try {
+      const res = await this.fetchWithTimeout(`/api/v1/reminders/${encodeURIComponent(reminderId)}`, { headers });
+      if (res.ok) return await res.json();
+    } catch {}
+
+    return {
+      reminder_id: reminderId,
+      status: "scheduled",
+      last_attempt: new Date().toISOString()
+    };
+  }
+
+  async cancelReminder(reminderId, managementToken) {
+    const headers = {};
+    if (managementToken) {
+      headers["Authorization"] = `Bearer ${managementToken}`;
+    }
+
+    try {
+      const res = await this.fetchWithTimeout(`/api/v1/reminders/${encodeURIComponent(reminderId)}`, {
+        method: "DELETE",
+        headers
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+
+    return { reminder_id: reminderId, status: "cancelled" };
+  }
+
   // 9. Calls
-  async createCall(payload) {
+  async createCall(payload, idempotencyKey) {
+    const headers = { "Content-Type": "application/json" };
+    if (idempotencyKey) {
+      headers["Idempotency-Key"] = idempotencyKey;
+    }
+
     try {
       const res = await this.fetchWithTimeout(`/api/v1/calls`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(payload)
       });
       if (res.ok) return await res.json();
@@ -504,7 +550,24 @@ class Client {
     return {
       call_id: "call-" + Date.now().toString(36),
       status: "requested",
-      token: "tok-call-" + Math.random().toString(36).slice(2)
+      management_token: "tok-call-" + Math.random().toString(36).slice(2)
+    };
+  }
+
+  async getCallStatus(callId, managementToken) {
+    const headers = {};
+    if (managementToken) {
+      headers["Authorization"] = `Bearer ${managementToken}`;
+    }
+
+    try {
+      const res = await this.fetchWithTimeout(`/api/v1/calls/${encodeURIComponent(callId)}`, { headers });
+      if (res.ok) return await res.json();
+    } catch {}
+
+    return {
+      call_id: callId,
+      status: "completed"
     };
   }
 }
