@@ -1,6 +1,6 @@
 # Backend owner: deterministic API and integrations
 
-**Status:** B0 API foundation exists. The medicine JSON and later integrations have not been created. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first. Search/price safety is the core milestone; integrations follow it.
+**Status:** B0 API foundation and B1 catalogue validation exist. Three PMBJP product rows have prices from a locally supplied official export dated 21 October 2026. Telmisartan 40 mg has one exact branded pack MRP and a separate sourced NPPA ceiling; the owner confirmed this exact pair on 21 October 2026, so that row is `verified`. The other two rows remain `incomplete`. Search/compare and later integrations have not been implemented, so no saving is served by an API yet. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first.
 
 ## Run the B0 foundation
 
@@ -12,6 +12,16 @@ uv run uvicorn app.main:app --reload
 ```
 
 The API serves `GET /api/v1/health`, `GET /api/v1/capabilities`, and `/openapi.json`. Run checks with `uv run --extra dev python -m unittest discover -s tests -v`. If you do not use uv, create a virtual environment and install `pip install -e ".[dev]"` before running the same commands. Copy `.env.example` to an untracked `.env` for local settings. `APP_ORIGIN` must match the frontend origin exactly; `DATABASE_URL` is optional until the persistence phase. Unimplemented capabilities return `false`.
+
+Validate the bundled catalogue before any curation commit:
+
+```powershell
+uv run python -m app.catalogue.validate
+```
+
+`data/medicines.schema.json` defines the record shape; the validator additionally checks unique IDs/codes, component-strength labels, pack basis, exact brand composition/form/release/pack, dates and verified-row requirements. The user supplied `Product List_21_10_2026 @ 11_28_19.csv`, an export of the [official PMBI product list](https://janaushadhi.gov.in/product-portfolio/product-view-list). It contains 2,439 rows, matching the [official PMBI basket count](https://www.pmbi.co.in/ProductList.aspx). Its SHA-256 is `4fb1753879b75946372496c8fe8e104f3bc8f55e868dbcb329ac8f4712b66a2f`. We cross-checked exact names, codes, packs and positive MRPs for codes 299, 300 and 291 before copying those three factual rows. The old 2018 prices were not used. The full CSV remains a local, Git-ignored audit input because [PMBI's copyright policy](https://www.pmbi.co.in/copyright.aspx) asks for permission to reproduce its material. `source_as_of` is the export date, not a claim that stock is available at a Kendra.
+
+For PMBJP code 300, the user supplied a [Pharma Sahi Daam](https://nppaipdms.gov.in/NPPA/PharmaSahiDaam/searchMedicine) detail screenshot on 21 October 2026: `TELMISARTAN TABLET 40 MG / A2B`, Fidelity Lifescience, MRP ₹74.62 per 10 tablets, MRP stated as of August 2026. The separate NPPA ceiling of ₹6.92 **per tablet** is shown there and in [Gazette row 705, notification 1489(E) dated 27 March 2025](https://nppa.gov.in/uploads/tender/0fd8be342c35d5a46a13b281cadc5e4f.pdf). `source_as_of` on the brand record is the portal capture date; the portal's month-level MRP date is preserved verbatim in `document_ref`. The owner explicitly confirmed review of the PMBI row and A2B pairing in the project conversation on 21 October 2026; code 300 is `verified` under reviewer `HarshitD05`. This review does not confirm Kendra stock or authorize substitution. Codes 299 and 291 have no exact brand MRP yet and remain `incomplete`. Never replace market MRP with the NPPA ceiling.
 
 ## Stack and module boundaries
 

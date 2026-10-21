@@ -60,9 +60,10 @@ See [`docs/DEMO_RUNBOOK.md`](docs/DEMO_RUNBOOK.md) for the real phone demo and f
 ## Source and tool credits
 
 - Drug/product source to verify and cite per row: [PMBI Jan Aushadhi product list](https://janaushadhi.gov.in/product-portfolio/product-view-list).
+- Three locally curated product prices come from a user-supplied [official PMBI product-list](https://janaushadhi.gov.in/product-portfolio/product-view-list) CSV export dated 21 October 2026. A [Pharma Sahi Daam](https://nppaipdms.gov.in/NPPA/PharmaSahiDaam/searchMedicine) screenshot supplies one exact A2B 40 mg branded pack MRP; the applicable NPPA ceiling has its own [Gazette reference](https://nppa.gov.in/uploads/tender/0fd8be342c35d5a46a13b281cadc5e4f.pdf). The full PMBI export stays local pending redistribution permission. The owner reviewed the A2B pair; the other two rows await review.
 - NPPA ceiling and available market-price lookup: [Pharma Sahi Daam](https://nppaipdms.gov.in/NPPA/PharmaSahiDaam/searchMedicine). Brand MRP must also carry its own dated evidence when used.
 - OCR: [Tesseract](https://tesseract-ocr.github.io/); fuzzy search: [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz).
-- Backend framework and configuration: [FastAPI](https://fastapi.tiangolo.com/), [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/), [Uvicorn](https://www.uvicorn.org/); API test client: [Starlette](https://www.starlette.io/testclient/).
+- Backend framework and configuration: [FastAPI](https://fastapi.tiangolo.com/), [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/), [Uvicorn](https://www.uvicorn.org/); catalogue validation: [jsonschema](https://python-jsonschema.readthedocs.io/); API test client: [Starlette](https://www.starlette.io/testclient/).
 - Maps: [Leaflet](https://leafletjs.com/), [OpenStreetMap](https://www.openstreetmap.org/copyright), [OSM tile policy](https://operations.osmfoundation.org/policies/tiles/), [OSRM API](https://project-osrm.org/docs/v5.5.1/api/).
 - Voice: [LiveKit outbound SIP](https://docs.livekit.io/telephony/making-calls/outbound-calls/), [LiveKit Groq plugin](https://docs.livekit.io/agents/models/llm/groq/), [LiveKit Murf plugin reference](https://docs.livekit.io/reference/python/livekit/plugins/murf/index.html), [Twilio](https://www.twilio.com/docs/voice).
 - Messaging: [Meta WhatsApp Business Platform](https://developers.facebook.com/docs/whatsapp/cloud-api/), [WhatsApp pricing](https://whatsappbusiness.com/products/platform-pricing/).
@@ -74,6 +75,7 @@ If any provider rule or API changes, update the owner README and this credit lis
 
 - [x] Product boundaries and three-owner handoff documented.
 - [x] Backend B0 health, capabilities, configuration and error foundation implemented.
+- [x] Backend B1 catalogue schema and validator implemented; one PMBJP/A2B pair reviewed with separate NPPA ceiling. Two rows remain incomplete.
 - [ ] Runnable PWA, API, agent and verified medicine dataset.
 - [ ] Real WhatsApp delivery and real Twilio/LiveKit call demonstrated.
 
