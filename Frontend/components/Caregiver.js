@@ -42,7 +42,9 @@ import {
   Loader2,
   AlertCircle,
   Heart,
+  Compass,
 } from "lucide-react";
+import Link from "next/link";
 
 // Patient-detail nav reuses the existing sections unchanged — they already
 // scope to X-Patient-Id through lib/api.js.

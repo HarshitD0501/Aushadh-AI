@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useState } from "react";
 import { useScrollReveal, useScrollCountUp } from "@/lib/gsap";
 import { DEMO_USERS, getPublicPrices, login } from "@/lib/api";
@@ -257,6 +259,13 @@ export default function Landing({
               Pricing
             </a>
             
+            <Link
+              href="/app"
+              className="sketchy-btn bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy px-4 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover flex items-center gap-1.5"
+            >
+              <Tag size={13} className="text-brand-orange" />
+              <span>PWA Tool</span>
+            </Link>
             {patient ? (
               <button
                 onClick={onOpenDashboard}
@@ -341,6 +350,17 @@ export default function Landing({
               <span className="flex items-center gap-1.5"><MessageCircleHeart size={16} className="text-brand-orange" /> WhatsApp Bot</span>
             </div>
           </div>
+
+          
+            <div className="pt-2">
+              <Link
+                href="/app"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy font-sans font-bold text-xs uppercase tracking-wider sketchy-btn shadow-sketch hover:shadow-sketch-hover transition-all"
+              >
+                <Tag className="w-4 h-4 text-brand-orange" />
+                <span>Open Instant PWA Tool (/app) →</span>
+              </Link>
+            </div>
 
           {/* Right: Player Card */}
           <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end reveal delay-100 active">
