@@ -215,7 +215,7 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
             <button
               className="btn btn-ghost btn-sm"
               onClick={onLogout}
-              title="Sign out of Aayogya"
+              title="Sign out of Aushadh-AI"
               style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px" }}
             >
               <LogOut size={14} />

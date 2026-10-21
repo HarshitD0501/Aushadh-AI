@@ -202,11 +202,11 @@ function ActionPanel({ patientCard, medsList, onContactSaved }) {
 
   const waText = [
     `Namaste ${patientCard.name?.split(" ")[0]}! 🔔`,
-    "Aapki dawaiyan (from Aayogya):",
+    "Aapki dawaiyan (from Aushadh-AI):",
     ...(medsList && medsList.length
       ? medsList.map((m) => `• ${m.brand} ${m.strength || ""} (${m.dosage_notation || "as advised"})`)
       : ["• Apni dawaiyan samay par lein"]),
-    "Kripya samay par le lein. — sent via Aayogya Caregiver",
+    "Kripya samay par le lein. — sent via Aushadh-AI Caregiver",
   ].join("\n");
 
   const placeAiCall = async () => {
