@@ -16,7 +16,7 @@ import {
 import { Search as SearchIcon, ArrowRight, RotateCcw, AlertCircle, Sparkles, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
-export default function SearchPage() {
+export default function SearchPage({ hideNavbar = false, onNavigateTab }) {
   const { t } = useLanguage();
 
   const [query, setQuery] = useState("");
@@ -86,7 +86,6 @@ export default function SearchPage() {
       setIsOfflineMode(false);
       setShowSuggestions((response.candidates || []).length > 0);
     } catch (err) {
-      // Offline fallback
       try {
         const offlineRecords = await searchOfflineCatalogue(trimmed);
         if (offlineRecords.length > 0) {
@@ -194,96 +193,101 @@ export default function SearchPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-brand-cream text-brand-navy flex flex-col">
-      <Navbar activeTab="search" />
-
-      <main className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full space-y-8">
-        
-        {/* Editorial Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch-hover text-xs font-bold uppercase tracking-wider text-brand-navy">
-            <Sparkles className="w-3.5 h-3.5 text-brand-orange" />
-            <span>PMBJP Price Transparency</span>
-          </div>
-          <h1 className="font-serif font-black text-3xl sm:text-5xl text-brand-navy tracking-tight leading-tight">
-            {t.searchTitle}
-          </h1>
-          <p className="font-sans text-sm sm:text-base text-brand-gray font-light">
-            {t.searchSubtitle}
-          </p>
+  const content = (
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full space-y-8">
+      {/* Editorial Header */}
+      <div className="text-center max-w-2xl mx-auto space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch-hover text-xs font-bold uppercase tracking-wider text-brand-navy">
+          <Sparkles className="w-3.5 h-3.5 text-brand-orange" />
+          <span>PMBJP Price Transparency</span>
         </div>
+        <h1 className="font-serif font-black text-3xl sm:text-5xl text-brand-navy tracking-tight leading-tight">
+          {t.searchTitle}
+        </h1>
+        <p className="font-sans text-sm sm:text-base text-brand-gray font-light">
+          {t.searchSubtitle}
+        </p>
+      </div>
 
-        {/* Search Input Box */}
-        <div className="relative max-w-3xl mx-auto">
-          <div className="flex items-center bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch p-2 sm:p-3 transition-shadow focus-within:shadow-sketch-hover">
-            <SearchIcon className="w-6 h-6 text-brand-orange ml-2 mr-3 flex-shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={handleQueryChange}
-              onFocus={() => candidates.length > 0 && setShowSuggestions(true)}
-              placeholder={t.searchPlaceholder}
-              aria-label={t.searchAriaLabel}
-              className="w-full bg-transparent font-sans text-base sm:text-lg font-medium text-brand-navy placeholder:text-brand-gray/60 focus:outline-none"
-            />
-            {isSearching && (
-              <span className="w-5 h-5 border-2 border-brand-orange border-t-transparent rounded-full animate-spin mr-3 flex-shrink-0" />
-            )}
-            {query && (
-              <button
-                onClick={() => {
-                  setQuery("");
-                  setCandidates([]);
-                  setShowSuggestions(false);
-                  setSelectedCandidate(null);
-                  setComparisonItem(null);
-                }}
-                className="text-xs font-bold text-brand-gray hover:text-brand-navy px-2 py-1 mr-1"
-                aria-label="Clear Search"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-
-          <p className="text-xs text-brand-gray mt-2 px-2 flex items-center justify-between">
-            <span>{t.searchHelpText}</span>
-            <span className="font-bold text-brand-navy">Try: Dolo, Glycomet, Atorva</span>
-          </p>
-
-          {/* Autocomplete Suggestions */}
-          {showSuggestions && (
-            <SearchSuggestions
-              candidates={candidates}
-              highlightedIndex={highlightedIndex}
-              onSelectCandidate={handleSelectCandidate}
-              isOffline={isOfflineMode}
-            />
+      {/* Search Input Box */}
+      <div className="relative max-w-3xl mx-auto">
+        <div className="flex items-center bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch p-2 sm:p-3 transition-shadow focus-within:shadow-sketch-hover">
+          <SearchIcon className="w-6 h-6 text-brand-orange ml-2 mr-3 flex-shrink-0" />
+          <input
+            type="text"
+            value={query}
+            onChange={handleQueryChange}
+            onFocus={() => candidates.length > 0 && setShowSuggestions(true)}
+            placeholder={t.searchPlaceholder}
+            aria-label={t.searchAriaLabel}
+            className="w-full bg-transparent font-sans text-base sm:text-lg font-medium text-brand-navy placeholder:text-brand-gray/60 focus:outline-none"
+          />
+          {isSearching && (
+            <span className="w-5 h-5 border-2 border-brand-orange border-t-transparent rounded-full animate-spin mr-3 flex-shrink-0" />
+          )}
+          {query && (
+            <button
+              onClick={() => {
+                setQuery("");
+                setCandidates([]);
+                setShowSuggestions(false);
+                setSelectedCandidate(null);
+                setComparisonItem(null);
+              }}
+              className="text-xs font-bold text-brand-gray hover:text-brand-navy px-2 py-1 mr-1"
+              aria-label="Clear Search"
+            >
+              Clear
+            </button>
           )}
         </div>
 
-        {/* Comparison Result Hero */}
-        {isComparing && (
-          <div className="p-8 text-center bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch max-w-3xl mx-auto">
-            <div className="w-8 h-8 border-3 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="font-serif font-bold text-brand-navy">Verifying exact generic equivalent pricing…</p>
-          </div>
+        <p className="text-xs text-brand-gray mt-2 px-2 flex items-center justify-between">
+          <span>{t.searchHelpText}</span>
+          <span className="font-bold text-brand-navy">Try: Dolo, Glycomet, Atorva</span>
+        </p>
+
+        {/* Autocomplete Suggestions */}
+        {showSuggestions && (
+          <SearchSuggestions
+            candidates={candidates}
+            highlightedIndex={highlightedIndex}
+            onSelectCandidate={handleSelectCandidate}
+            isOffline={isOfflineMode}
+          />
         )}
+      </div>
 
-        {comparisonItem && !isComparing && (
-          <div className="max-w-4xl mx-auto space-y-4">
-            <PriceComparisonHero
-              item={comparisonItem}
-              packCount={packCount}
-              onPackCountChange={handlePackCountChange}
-              onAddToReport={handleAddToReport}
-              isAdding={isAdding}
-              addedSuccess={addedSuccess}
-            />
+      {/* Comparison Result Hero */}
+      {isComparing && (
+        <div className="p-8 text-center bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch max-w-3xl mx-auto">
+          <div className="w-8 h-8 border-3 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="font-serif font-bold text-brand-navy">Verifying exact generic equivalent pricing…</p>
+        </div>
+      )}
 
-            {/* Quick Link to Current Prescription Basket */}
-            <div className="text-center pt-2">
+      {comparisonItem && !isComparing && (
+        <div className="max-w-4xl mx-auto space-y-4">
+          <PriceComparisonHero
+            item={comparisonItem}
+            packCount={packCount}
+            onPackCountChange={handlePackCountChange}
+            onAddToReport={handleAddToReport}
+            isAdding={isAdding}
+            addedSuccess={addedSuccess}
+          />
+
+          {/* Link to Saved Basket */}
+          <div className="text-center pt-2">
+            {onNavigateTab ? (
+              <button
+                onClick={() => onNavigateTab("history")}
+                className="inline-flex items-center gap-2 text-xs font-bold text-brand-navy uppercase tracking-wider hover:text-brand-orange underline underline-offset-4"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>View Saved Reports & Basket History</span>
+              </button>
+            ) : (
               <Link
                 href="/history"
                 className="inline-flex items-center gap-2 text-xs font-bold text-brand-navy uppercase tracking-wider hover:text-brand-orange underline underline-offset-4"
@@ -291,36 +295,47 @@ export default function SearchPage() {
                 <ShoppingBag className="w-4 h-4" />
                 <span>View Saved Reports & Basket History</span>
               </Link>
-            </div>
+            )}
           </div>
-        )}
-
-        {/* Empty State / Initial Guide */}
-        {!comparisonItem && !isComparing && (
-          <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-            <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
-              <span className="text-2xl font-serif font-black text-brand-orange">01</span>
-              <h4 className="font-serif font-black text-sm text-brand-navy">Search Brand</h4>
-              <p className="text-xs text-brand-gray">Type any prescribed Indian brand or salt to discover equivalents.</p>
-            </div>
-            <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
-              <span className="text-2xl font-serif font-black text-brand-orange">02</span>
-              <h4 className="font-serif font-black text-sm text-brand-navy">Inspect PMBJP</h4>
-              <p className="text-xs text-brand-gray">Compare verified Jan Aushadhi MRP against NPPA regulated ceiling caps.</p>
-            </div>
-            <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
-              <span className="text-2xl font-serif font-black text-brand-orange">03</span>
-              <h4 className="font-serif font-black text-sm text-brand-navy">Confirm & Save</h4>
-              <p className="text-xs text-brand-gray">Generate a counter slip to consult your pharmacist or doctor.</p>
-            </div>
-          </div>
-        )}
-
-        {/* Global Legal Notice */}
-        <div className="max-w-3xl mx-auto">
-          <Disclaimer />
         </div>
-      </main>
+      )}
+
+      {/* Empty State / Initial Guide */}
+      {!comparisonItem && !isComparing && (
+        <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+          <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
+            <span className="text-2xl font-serif font-black text-brand-orange">01</span>
+            <h4 className="font-serif font-black text-sm text-brand-navy">Search Brand</h4>
+            <p className="text-xs text-brand-gray">Type any prescribed Indian brand or salt to discover equivalents.</p>
+          </div>
+          <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
+            <span className="text-2xl font-serif font-black text-brand-orange">02</span>
+            <h4 className="font-serif font-black text-sm text-brand-navy">Inspect PMBJP</h4>
+            <p className="text-xs text-brand-gray">Compare verified Jan Aushadhi MRP against NPPA regulated ceiling caps.</p>
+          </div>
+          <div className="p-4 bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch text-center space-y-2">
+            <span className="text-2xl font-serif font-black text-brand-orange">03</span>
+            <h4 className="font-serif font-black text-sm text-brand-navy">Confirm & Save</h4>
+            <p className="text-xs text-brand-gray">Generate a counter slip to consult your pharmacist or doctor.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Global Legal Notice */}
+      <div className="max-w-3xl mx-auto">
+        <Disclaimer />
+      </div>
+    </main>
+  );
+
+  if (hideNavbar) {
+    return content;
+  }
+
+  return (
+    <div className="min-h-screen bg-brand-cream text-brand-navy flex flex-col">
+      <Navbar activeTab="search" />
+      <div className="flex-1">{content}</div>
     </div>
   );
 }
