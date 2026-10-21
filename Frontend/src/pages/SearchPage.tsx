@@ -6,7 +6,12 @@ import { apiClient, ApiClientError } from '../api/client';
 import type { SearchCandidate, ComparisonItem, CompareResponse } from '../api/types';
 import { SearchSuggestions } from '../components/SearchSuggestions';
 import { PriceComparisonHero } from '../components/PriceComparisonHero';
-import { getCatalogueCache, saveCatalogueCache, searchOfflineCatalogue } from '../storage/indexedDb';
+import {
+  addOrUpdateReportWithItem,
+  getCatalogueCache,
+  saveCatalogueCache,
+  searchOfflineCatalogue
+} from '../storage/indexedDb';
 
 export const SearchPage: React.FC = () => {
   const { t } = useLanguage();
@@ -241,11 +246,9 @@ export const SearchPage: React.FC = () => {
     }
   };
 
-  const handleAddToPrescription = (_item: ComparisonItem, _count: number) => {
-    // Generate temporary client report UUID and navigate to detail page
-    const clientReportId = `rep-${Date.now()}`;
-    // Phase F3 will persist this to IndexedDB; for now route to detail page
-    navigate(`/prescriptions/${clientReportId}`);
+  const handleAddToPrescription = async (item: ComparisonItem, count: number) => {
+    const reportId = await addOrUpdateReportWithItem(item, count);
+    navigate(`/prescriptions/${reportId}`);
   };
 
   return (

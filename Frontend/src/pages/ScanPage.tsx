@@ -17,6 +17,7 @@ import type { OcrResponse, SearchCandidate, ComparisonItem } from '../api/types'
 import { SearchSuggestions } from '../components/SearchSuggestions';
 import { PriceComparisonHero } from '../components/PriceComparisonHero';
 import { useNavigate } from 'react-router-dom';
+import { addOrUpdateReportWithItem } from '../storage/indexedDb';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -185,8 +186,22 @@ export const ScanPage: React.FC = () => {
     }
   };
 
-  const handleProceedToReport = () => {
-    const reportId = `rep-${Date.now()}`;
+  const handleProceedToReport = async () => {
+    let reportId: string;
+    if (comparisonItem) {
+      const checkupData = checkupConfirmed
+        ? {
+            date_local: checkupDate,
+            time_local: checkupTime,
+            place: checkupPlace,
+            doctor: checkupDoctor || null,
+            confirmed: true
+          }
+        : null;
+      reportId = await addOrUpdateReportWithItem(comparisonItem, packCount, undefined, checkupData);
+    } else {
+      reportId = `rep-${Date.now()}`;
+    }
     navigate(`/prescriptions/${reportId}`);
   };
 

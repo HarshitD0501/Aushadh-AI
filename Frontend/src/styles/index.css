@@ -398,8 +398,13 @@ input[type="submit"] {
   margin-bottom: 8px;
 }
 
+.print-only {
+  display: none !important;
+}
+
 /* Print Styles for Chemist Slip */
 @media print {
+  .no-print,
   .app-header,
   .primary-nav,
   .app-footer,
@@ -408,6 +413,10 @@ input[type="submit"] {
   .lang-switch-btn,
   .status-badge {
     display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
   }
 
   .app-container {
