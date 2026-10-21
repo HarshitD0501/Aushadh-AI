@@ -7,6 +7,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
+from app.api.catalogue import router as catalogue_router
+from app.catalogue.service import CatalogueService
 from app.config import Settings
 from app.errors import AppError, ErrorEnvelope, error_response
 from app.middleware import RequestGuardMiddleware
@@ -28,6 +30,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         },
     )
     app.state.settings = config
+    app.state.catalogue = CatalogueService.from_path()
+    app.include_router(catalogue_router)
 
     app.add_middleware(
         RequestGuardMiddleware,
@@ -39,7 +43,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_credentials=False,
         allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
         allow_headers=["Authorization", "Content-Type"],
-        expose_headers=["X-Request-ID"],
+        expose_headers=["X-Request-ID", "ETag"],
     )
 
     @app.exception_handler(AppError)

@@ -1,6 +1,6 @@
 # Backend owner: deterministic API and integrations
 
-**Status:** B0 API foundation and B1 catalogue validation exist. Three PMBJP product rows have prices from a locally supplied official export dated 21 October 2026. Telmisartan 40 mg has one exact branded pack MRP and a separate sourced NPPA ceiling; the owner confirmed this exact pair on 21 October 2026, so that row is `verified`. The other two rows remain `incomplete`. Search/compare and later integrations have not been implemented, so no saving is served by an API yet. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first.
+**Status:** B0 API foundation, B1 catalogue validation and B2 search/comparison code exist. Three PMBJP product rows have prices from a locally supplied official export dated 21 October 2026. Telmisartan 40 mg has one exact branded pack MRP and a separate sourced NPPA ceiling; the owner confirmed this exact pair on 21 October 2026, so that row is `verified`. The other two rows remain `incomplete` and are excluded from public suggestions and savings. B2's RapidFuzz dependency still needs installation and a test run in a network-enabled environment; the local tests currently exercise the documented deterministic fallback. Later integrations are not implemented. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first.
 
 ## Run the B0 foundation
 
@@ -11,7 +11,26 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload
 ```
 
-The API serves `GET /api/v1/health`, `GET /api/v1/capabilities`, and `/openapi.json`. Run checks with `uv run --extra dev python -m unittest discover -s tests -v`. If you do not use uv, create a virtual environment and install `pip install -e ".[dev]"` before running the same commands. Copy `.env.example` to an untracked `.env` for local settings. `APP_ORIGIN` must match the frontend origin exactly; `DATABASE_URL` is optional until the persistence phase. Unimplemented capabilities return `false`.
+The API serves `GET /api/v1/health`, `GET /api/v1/capabilities`, `GET /api/v1/catalogue/public`, `GET /api/v1/search`, `POST /api/v1/compare`, and `/openapi.json`. Run checks with `uv run --extra dev python -m unittest discover -s tests -v`. If you do not use uv, create a virtual environment and install `pip install -e ".[dev]"` before running the same commands. Copy `.env.example` to an untracked `.env` for local settings. `APP_ORIGIN` must match the frontend origin exactly; `DATABASE_URL` is optional until the persistence phase. Unimplemented capabilities return `false`.
+
+## B2 search and comparison handoff
+
+The application validates and indexes the catalogue once at startup. `/api/v1/search?q=telmisrtan` proposes reviewed records only; a result is **unconfirmed** even if its score is high. Omitted strength can yield multiple strengths/forms. An explicitly typed strength filters out different strengths, but a matching strength does not select a dosage form or release type. Clients must display each candidate's strength, form, release type and pack, then send the user's exact `medicine_id` and `brand_id` to `/api/v1/compare`. Query length is capped at 120 characters and results at 8.
+
+`GET /api/v1/catalogue/public` exposes only reviewed names/IDs and returns an ETag for the frontend's stale-labelled offline suggestions. It contains no prices, patient reports or phone data; an online compare request is needed for a current savings estimate.
+
+`POST /api/v1/compare` accepts 1–20 items, each with 1–30 packs. A line reports source URL and checked date for each available price, the exact pack basis, `null` saving when a market MRP or reviewed PMBJP price is unavailable, and an `excluded_reason`. Only complete comparable lines contribute to basket totals. NPPA ceiling keeps its own unit and is never used as market MRP. The current reviewed example is A2B 40 mg tablet, 10 tablets: branded MRP **₹74.62**, PMBJP code 300 **₹12.38**, estimated difference **₹62.24 (83.4%)** for one pack. The NPPA ceiling is separately **₹6.92 per tablet**. This is indicative price information, not a stock claim or substitution decision.
+
+RapidFuzz WRatio with cutoff 75 is used when the declared dependency is installed. If it is absent during offline development, a slower deterministic `difflib` scorer keeps manual search usable; its scores and ranking may differ. Do not treat fallback test results as proof of RapidFuzz behavior. On 21 October 2026 this sandbox blocked PyPI TCP access (`os error 10013`), so `uv sync --extra dev` and a real RapidFuzz test could not be completed here. In a network-enabled terminal, run:
+
+```powershell
+uv sync --extra dev
+uv run --extra dev python -c "import rapidfuzz; print(rapidfuzz.__version__)"
+uv run --extra dev python -m unittest discover -s tests -v
+uv run python -m app.catalogue.validate
+```
+
+Local verification before the dependency install: 31 tests pass with `difflib`. A 202-row **synthetic** catalogue (one real reviewed row, 199 test variants and two incomplete rows; 600 aliases) took 14.4 ms/search on average across 400 warm calls in this environment. This measures fallback search only; it does not establish production latency. The synthetic records are not product data and are never shipped in `data/medicines.json`.
 
 Validate the bundled catalogue before any curation commit:
 
