@@ -16,6 +16,8 @@ class Settings:
     backend_private_url: str
     agent_backend_token: str
     agent_name: str
+    groq_api_key: str
+    groq_voice_model: str
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None) -> Settings:
@@ -26,6 +28,7 @@ class Settings:
             "LIVEKIT_API_SECRET",
             "BACKEND_PRIVATE_URL",
             "AGENT_BACKEND_TOKEN",
+            "GROQ_API_KEY",
         )
         missing = [name for name in required if not values.get(name, "").strip()]
         if missing:
@@ -40,6 +43,10 @@ class Settings:
         if not agent_name or len(agent_name) > 64 or not all(c.isalnum() or c in "-_" for c in agent_name):
             raise ValueError("LIVEKIT_AGENT_NAME must be a short alphanumeric name")
 
+        groq_model = values.get("GROQ_VOICE_MODEL", "").strip() or "llama-3.3-70b-versatile"
+        if len(groq_model) > 128 or not all(c.isalnum() or c in "-_/." for c in groq_model):
+            raise ValueError("GROQ_VOICE_MODEL must be a model identifier")
+
         return cls(
             livekit_url=livekit_url,
             livekit_api_key=values["LIVEKIT_API_KEY"].strip(),
@@ -47,6 +54,8 @@ class Settings:
             backend_private_url=backend_url,
             agent_backend_token=values["AGENT_BACKEND_TOKEN"].strip(),
             agent_name=agent_name,
+            groq_api_key=values["GROQ_API_KEY"].strip(),
+            groq_voice_model=groq_model,
         )
 
 

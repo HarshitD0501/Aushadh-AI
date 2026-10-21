@@ -7,9 +7,11 @@ place a phone call yet; A1–A4 add those behaviors.
 From `Agent/`, install Python 3.10+ and run:
 
 ```powershell
+$env:UV_CACHE_DIR = Join-Path (Get-Location) "tmp\uv-cache"
 uv sync
 Copy-Item .env.example .env
 # Fill .env with a test LiveKit project and a matching backend agent token.
+# Set GROQ_API_KEY; blank GROQ_VOICE_MODEL uses llama-3.3-70b-versatile.
 uv run python worker.py dev --log-level=warning
 ```
 

@@ -28,6 +28,7 @@ class SettingsTests(unittest.TestCase):
             "LIVEKIT_API_SECRET": "private-secret",
             "BACKEND_PRIVATE_URL": "http://example.org",
             "AGENT_BACKEND_TOKEN": "private-token",
+            "GROQ_API_KEY": "private-groq-token",
         }
         with self.assertRaisesRegex(ValueError, "BACKEND_PRIVATE_URL") as error:
             Settings.from_env(values)
