@@ -25,6 +25,7 @@ import type {
 import {
   DEV_FIXTURE_CATALOGUE,
   getFixtureCompare,
+  getFixtureOcr,
   getFixtureSearch
 } from './fixtures';
 
@@ -201,15 +202,29 @@ export class ApiClient {
   }
 
   // OCR
-  async processOcr(imageFile: File | Blob, signal?: AbortSignal): Promise<OcrResponse> {
+  async processOcr(
+    imageFile: File | Blob,
+    signal?: AbortSignal
+  ): Promise<OcrResponse & { isFixture?: boolean }> {
     const formData = new FormData();
     formData.append('image', imageFile);
 
-    return this.request<OcrResponse>('/api/v1/ocr', {
-      method: 'POST',
-      body: formData,
-      signal
-    });
+    try {
+      const res = await this.request<OcrResponse>('/api/v1/ocr', {
+        method: 'POST',
+        body: formData,
+        signal
+      });
+      this.lastRequestUsedFixture = false;
+      return res;
+    } catch (err) {
+      if (this.devFixturesEnabled && err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+        this.lastRequestUsedFixture = true;
+        const fixtureRes = getFixtureOcr((imageFile as File)?.name);
+        return { ...fixtureRes, isFixture: true };
+      }
+      throw err;
+    }
   }
 
   // Stores & routes

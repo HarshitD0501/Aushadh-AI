@@ -7,6 +7,7 @@
 import type {
   CompareRequest,
   CompareResponse,
+  OcrResponse,
   PublicCatalogueResponse,
   SearchResponse
 } from './types';
@@ -327,5 +328,42 @@ export function getFixtureCompare(request: CompareRequest): CompareResponse {
       saving_total_paise: comparable.length > 0 ? savingTotalPaise : null,
       saving_percent: comparable.length > 0 ? savingPercent : null
     }
+  };
+}
+
+export function getFixtureOcr(fileName?: string): OcrResponse {
+  const name = fileName?.toLowerCase() || '';
+  if (name.includes('blur') || name.includes('handwritten')) {
+    return {
+      raw_text: 'Px ... tab ... 500 ... daily ... morning',
+      normalization_provider: 'none',
+      suggestions: [
+        {
+          observed_text: 'tab 500',
+          query_tokens: ['tab', '500'],
+          candidate_medicine_ids: ['pmbjp-001-paracetamol-500', 'pmbjp-023-metformin-500'],
+          status: 'unconfirmed'
+        }
+      ],
+      warnings: [
+        'Low contrast or handwriting detected. Raw OCR text may contain transcription errors. Please verify and correct manually.'
+      ]
+    };
+  }
+
+  return {
+    raw_text: 'DOLO 500 PARACETAMOL TABLETS IP 500mg Batch: DL8921 Exp: 12/28 Micro Labs Ltd',
+    normalization_provider: 'gemma',
+    suggestions: [
+      {
+        observed_text: 'DOLO 500 PARACETAMOL TABLETS IP 500mg',
+        query_tokens: ['Dolo', 'Paracetamol', '500mg', 'Tablet'],
+        candidate_medicine_ids: ['pmbjp-001-paracetamol-500'],
+        status: 'unconfirmed'
+      }
+    ],
+    warnings: [
+      'Extracted medicine names are candidate suggestions only. Confirm exact formulation before proceeding.'
+    ]
   };
 }
