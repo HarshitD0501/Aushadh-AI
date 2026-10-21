@@ -1,5 +1,4 @@
 import "./globals.css";
-import "leaflet/dist/leaflet.css";
 import Script from "next/script";
 import AuraBackground from "@/components/reactbits/AuraBackground";
 
