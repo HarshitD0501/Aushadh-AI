@@ -1,0 +1,35 @@
+# Secrets and local provider credentials
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# JavaScript / PWA
+node_modules/
+dist/
+.vite/
+coverage/
+.next/
+
+# Local data, prescriptions and downloads
+*.sqlite
+*.sqlite3
+uploads/
+tmp/
+*.log
+*.zip
+
+# Editor and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
