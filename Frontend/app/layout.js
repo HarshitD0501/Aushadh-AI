@@ -1,6 +1,7 @@
 import "./globals.css";
 import Script from "next/script";
 import AuraBackground from "@/components/reactbits/AuraBackground";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 export const metadata = {
   title: "Aushadh-AI — Aapki Dawai, Sahi Daam",
@@ -27,7 +28,9 @@ export default function RootLayout({ children }) {
         {/* Global Paper Texture Overlay */}
         <div className="fixed inset-0 pointer-events-none z-50 bg-paper-texture mix-blend-multiply" />
         <AuraBackground />
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
         <Script src="https://code.iconify.design/3/3.1.0/iconify.min.js" strategy="lazyOnload" />
         <Script id="sw-register" strategy="afterInteractive">
           {`
