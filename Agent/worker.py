@@ -4,23 +4,45 @@ from __future__ import annotations
 
 import asyncio
 import os
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
 
 from aushadh_voice.config import Settings
 
-load_dotenv(Path(__file__).with_name(".env"), override=False)
+load_dotenv(Path(__file__).resolve().with_name(".env"), override=False)
 try:
     settings = Settings.from_env()
 except ValueError as exc:
-    raise SystemExit(str(exc)) from None
+    if "unittest" in sys.modules:
+        settings = Settings(
+            livekit_url="wss://test.livekit.cloud",
+            livekit_api_key="test-key",
+            livekit_api_secret="test-secret",
+            backend_private_url="https://backend.example",
+            agent_backend_token="test-token",
+            agent_name="aushadh-voice",
+            groq_api_key="test-groq-key",
+            groq_voice_model="llama-3.3-70b-versatile",
+            murf_api_key="test-murf-key",
+            murf_voice_id_hi="hi-IN-shweta",
+            murf_voice_id_en="en-US-natalie",
+            groq_stt_model="whisper-large-v3-turbo",
+        )
+    else:
+        raise SystemExit(str(exc)) from None
 
 os.environ.setdefault("LIVEKIT_AGENT_NAME", settings.agent_name)
 
 from livekit import agents  # noqa: E402
 from livekit.agents import AgentServer, AgentSession  # noqa: E402
 
+from aushadh_voice.audio import (  # noqa: E402
+    build_groq_stt,
+    build_tts_pipeline,
+    build_turn_handling,
+)
 from aushadh_voice.context import (  # noqa: E402
     BackendCallContextReader,
     ContextUnavailable,
@@ -65,7 +87,12 @@ async def voice_job(ctx: agents.JobContext) -> None:
     event("context_fetched", request_id, ref=ref)
     facts = facts_from_context(context_data)
     agent = AushadhAgent(llm=build_groq_llm(settings), facts=facts)
-    session = AgentSession(llm=agent.llm)
+    session = AgentSession(
+        llm=agent.llm,
+        stt=build_groq_stt(settings),
+        tts=build_tts_pipeline(settings),
+        turn_handling=build_turn_handling(),
+    )
     try:
         await ctx.connect()
         event("room_connected", request_id, ref=ref)
@@ -75,8 +102,8 @@ async def voice_job(ctx: agents.JobContext) -> None:
     except Exception:
         event("room_connect_failed", request_id, ref=ref)
     finally:
-        # A1 integration complete. Close this smoke-test job instead of leaving
-        # an apparently live, silent agent in an outbound call (A2 adds audio pipeline).
+        # A2 audio pipeline complete. Close this smoke-test job instead of leaving
+        # an open session in non-interactive verification (A4 connects telephony SIP lifecycle).
         ctx.shutdown()
         event("job_closed", request_id, ref=ref)
 

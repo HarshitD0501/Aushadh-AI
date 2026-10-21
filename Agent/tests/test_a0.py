@@ -29,6 +29,7 @@ class SettingsTests(unittest.TestCase):
             "BACKEND_PRIVATE_URL": "http://example.org",
             "AGENT_BACKEND_TOKEN": "private-token",
             "GROQ_API_KEY": "private-groq-token",
+            "MURF_API_KEY": "private-murf-token",
         }
         with self.assertRaisesRegex(ValueError, "BACKEND_PRIVATE_URL") as error:
             Settings.from_env(values)

@@ -27,6 +27,7 @@ def settings(**overrides: str) -> Settings:
         "BACKEND_PRIVATE_URL": "https://backend.example",
         "AGENT_BACKEND_TOKEN": "test-token",
         "GROQ_API_KEY": "test-groq-key",
+        "MURF_API_KEY": "test-murf-key",
     }
     values.update(overrides)
     return Settings.from_env(values)
@@ -244,6 +245,12 @@ class WorkerIntegrationTests(unittest.TestCase):
             asyncio.run(voice_job(ctx))
 
             self.assertTrue(ctx.connect.called)
+            self.assertTrue(mock_session_cls.called)
+            session_kwargs = mock_session_cls.call_args[1]
+            self.assertIn("llm", session_kwargs)
+            self.assertIn("stt", session_kwargs)
+            self.assertIn("tts", session_kwargs)
+            self.assertIn("turn_handling", session_kwargs)
             self.assertTrue(mock_session.start.called)
             agent_instance = mock_session.start.call_args[0][0]
             self.assertIsInstance(agent_instance, AushadhAgent)

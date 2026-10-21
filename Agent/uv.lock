@@ -275,14 +275,14 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
-    { name = "livekit-agents", extra = ["groq"] },
+    { name = "livekit-agents", extra = ["groq", "murf"] },
     { name = "python-dotenv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "httpx", specifier = ">=0.27,<1" },
-    { name = "livekit-agents", extras = ["groq"], specifier = "~=1.8" },
+    { name = "livekit-agents", extras = ["groq", "murf"], specifier = "~=1.8" },
     { name = "python-dotenv", specifier = ">=1,<2" },
 ]
 
@@ -1269,6 +1269,9 @@ images = [
     { name = "pillow", version = "12.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "pillow", version = "13.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
+murf = [
+    { name = "livekit-plugins-murf" },
+]
 openai = [
     { name = "livekit-plugins-openai" },
 ]
@@ -1369,6 +1372,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/06/10/5b7c714c584bd092e5b6fb3470098d4c297f0b84fbf248694130573cd08a/livekit_plugins_groq-1.8.8.tar.gz", hash = "sha256:768d4318bd2c37c2372399f17792febbd448100f9c06d588b2111f6f3b8a90a6", size = 6162, upload-time = "2026-10-15T06:07:53.623Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/59/bc/d69e850bb71fa57ece76a7bda6768e9e85071a493fd4cc3579834d32a815/livekit_plugins_groq-1.8.8-py3-none-any.whl", hash = "sha256:ad24714f248a3ae1e0a9230f1b2f2eba0191ca7b4714bb08d4c4d4acca8e1034", size = 7334, upload-time = "2026-10-15T06:07:52.42Z" },
+]
+
+[[package]]
+name = "livekit-plugins-murf"
+version = "1.8.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "livekit-agents" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/55/77/d13dd9b56151fb601a5541cc73344943730c1328c89b3d5100117f391d9b/livekit_plugins_murf-1.8.8.tar.gz", hash = "sha256:df75f8c5a4397f06a111eb4d72a89426bc6684366e8623bafaf9ae2e57d210a5", size = 7956, upload-time = "2026-10-15T06:08:39.135Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/3d/d8bdd53f82692b54de77046a00c38b55d80e66e07e7c577262e4955f2207/livekit_plugins_murf-1.8.8-py3-none-any.whl", hash = "sha256:3104931c491e40abf94b2b31c7fd0bd560d85d947bf9e0414b05058698223265", size = 8545, upload-time = "2026-10-15T06:08:37.89Z" },
 ]
 
 [[package]]
