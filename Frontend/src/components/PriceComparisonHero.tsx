@@ -2,7 +2,6 @@ import React from 'react';
 import { ExternalLink, CheckCircle, AlertTriangle, ShieldAlert } from 'lucide-react';
 import type { ComparisonItem } from '../api/types';
 import { formatPaise, formatPercent } from '../utils/currency';
-import { useLanguage } from '../contexts/LanguageContext';
 
 interface PriceComparisonHeroProps {
   item: ComparisonItem;
@@ -19,8 +18,6 @@ export const PriceComparisonHero: React.FC<PriceComparisonHeroProps> = ({
   onAddToPrescription,
   isFixture = false
 }) => {
-  const { t } = useLanguage();
-
   const isComparable = item.saving_paise !== null && item.saving_paise !== undefined;
 
   const marketTotalPaise = item.market_price

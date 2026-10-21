@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Pill, Check, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import type { SearchCandidate } from '../api/types';
 
 interface SearchSuggestionsProps {
