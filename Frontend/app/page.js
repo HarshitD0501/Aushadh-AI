@@ -34,12 +34,12 @@ export default function Home() {
       setPatient(null);
       setView("landing");
     };
-    window.addEventListener("aayogya:logout", onLogout);
-    window.addEventListener("aarogya:logout", onLogout);
+    window.addEventListener("aushadh:logout", onLogout);
+    window.addEventListener("aushadh:logout", onLogout);
     return () => {
       alive = false;
-      window.removeEventListener("aayogya:logout", onLogout);
-      window.removeEventListener("aarogya:logout", onLogout);
+      window.removeEventListener("aushadh:logout", onLogout);
+      window.removeEventListener("aushadh:logout", onLogout);
     };
   }, []);
 

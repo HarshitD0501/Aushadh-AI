@@ -1,43 +1,44 @@
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import AuraBackground from "@/components/reactbits/AuraBackground";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
 export const metadata = {
-  title: "Aayogya — your medicines, made clear",
+  title: "Aushadh-AI — Aapki Dawai, Sahi Daam",
   description:
-    "Understand your prescriptions, daily schedule, interactions, and nearby pharmacies. Not a substitute for your doctor.",
+    "Medicine price transparency, verified Jan Aushadhi generic alternatives, and local Kendra finder. Informational only — confirm with doctor.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Aushadh-AI",
+  },
 };
 
 export const viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#1a2234",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${playfair.variable} scroll-smooth`}>
-      <body className="font-sans antialiased selection:bg-[#f4c4a8] selection:text-[#1a2234]">
-        {/* Paper Texture Overlay from Deciding Health template */}
+    <html lang="en" className="scroll-smooth">
+      <body className="font-sans antialiased selection:bg-brand-peach selection:text-brand-navy">
+        {/* Global Paper Texture Overlay */}
         <div className="fixed inset-0 pointer-events-none z-50 bg-paper-texture mix-blend-multiply" />
         <AuraBackground />
         {children}
+        <Script src="https://code.iconify.design/3/3.1.0/iconify.min.js" strategy="lazyOnload" />
+        <Script id="sw-register" strategy="afterInteractive">
+          {`
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+              });
+            }
+          `}
+        </Script>
       </body>
     </html>
   );
