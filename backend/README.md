@@ -1,6 +1,17 @@
 # Backend owner: deterministic API and integrations
 
-**Status:** Handoff only; backend code and medicine JSON have not been created. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first. Search/price safety is the core milestone; integrations follow it.
+**Status:** B0 API foundation exists. The medicine JSON and later integrations have not been created. Work in this folder. Read [`../docs/API_CONTRACT.md`](../docs/API_CONTRACT.md), [`../docs/DATA_POLICY.md`](../docs/DATA_POLICY.md), and [`../CONTRIBUTING.md`](../CONTRIBUTING.md) first. Search/price safety is the core milestone; integrations follow it.
+
+## Run the B0 foundation
+
+Python 3.11+ is required. From this `backend` directory:
+
+```powershell
+uv sync --extra dev
+uv run uvicorn app.main:app --reload
+```
+
+The API serves `GET /api/v1/health`, `GET /api/v1/capabilities`, and `/openapi.json`. Run checks with `uv run --extra dev python -m unittest discover -s tests -v`. If you do not use uv, create a virtual environment and install `pip install -e ".[dev]"` before running the same commands. Copy `.env.example` to an untracked `.env` for local settings. `APP_ORIGIN` must match the frontend origin exactly; `DATABASE_URL` is optional until the persistence phase. Unimplemented capabilities return `false`.
 
 ## Stack and module boundaries
 

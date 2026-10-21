@@ -1,0 +1,1 @@
+"""AushadhAi backend application."""
