@@ -56,37 +56,37 @@ Implement the exact contracts in [`API_CONTRACT.md`](../docs/API_CONTRACT.md): `
 
 ## Phase sequence: test, commit, then continue
 
-### B0 — API foundation and safe configuration
+### B0 — API foundation and safe configuration [DONE - committed `1938d70`]
 
 Create the installable FastAPI project, health/capabilities routes, Pydantic settings, typed error envelope, request IDs, origin allowlist, input caps, log redaction, tests and `.env.example`. Configure local PostgreSQL/Neon connection but do not require it for catalogue search. Keep a single source of truth for URLs and timeouts.
 
 **Check:** fresh-clone setup runs, health endpoint and OpenAPI load, invalid CORS/input has an honest error, no env secret appears in logs or Git. **Commit now:** `chore(backend): scaffold API configuration and health checks`.
 
-### B1 — Sourced catalogue and validation
+### B1 — Sourced catalogue and validation [DONE - committed `5fd4bfd`]
 
 Create `data/medicines.json` and a JSON Schema/validator. Curate an initial small set of **fully verified** PMBJP entries and exact brand comparisons, then continue toward 150–200 reviewed SKUs. Every PMBJP price/product code, molecule, strength, form, pack, brand MRP and NPPA ceiling has source metadata or `null`. Keep source documents/URLs and checked date. Include reviewer and status. Do not import Aayogya's generated prices or infer molecules from brand spellings.
 
 **Check:** duplicate ID, missing source, wrong unit, mismatched strength/form/pack and missing price fixtures fail validation; valid incomplete row passes without a computed saving. **Commit now:** `data(backend): add sourced medicine catalogue and validator`. Commit later curation batches separately with reviewer evidence; do not wait to dump 200 rows at once.
 
-### B2 — Fast fuzzy search and safe comparison
+### B2 — Fast fuzzy search and safe comparison [DONE - committed `a3088cd`]
 
 Normalize search query deterministically (case, punctuation, spacing), build brand/molecule aliases from verified rows, rank with RapidFuzz WRatio ≥75 and return all plausible strengths/forms separately. Publish public search labels/IDs through `/catalogue/public` with a dataset version and ETag for stale-labelled offline suggestions. Compare only user-selected `medicine_id`/`brand_id` exact pairs. Use integer paise, complete pack basis, `null` for missing data, independently applicable NPPA value, and basket exclusions. Never silently choose a strength or release type.
 
 **Check:** misspelling, half-read brand, molecule search, multiple strengths, no match, brand-to-wrong-form rejection, absent NPPA/MRP, negative difference and multi-item arithmetic. Benchmark warm in-memory search on the target catalogue; record observed latency, not a zero-latency promise. **Commit now:** `feat(backend): add verified fuzzy search and price comparison`.
 
-### B3 — Bounded OCR and Gemma→Groq normalization
+### B3 — Bounded OCR and Gemma→Groq normalization [DONE - committed `bb01f46`]
 
 Accept image types only, enforce byte/pixel limits, preprocess a transient copy with grayscale/contrast/threshold as useful, and run Tesseract in a bounded worker with timeout. Return raw text and low-confidence warnings. Implement a normalizer interface: **Gemma endpoint first when actually configured and verified**, Groq fallback on timeout/error, then deterministic OCR-token+fuzzy fallback. Validate model JSON and map all output to catalogue IDs. The model may clean query tokens and extract clearly observed strength text; it may not supply medical facts, prices, product codes or a confirmed dose. Current Groq-hosted `gemma2-9b-it` is deprecated; do not configure it as the Gemma route. Document the actual Gemma provider/model and proof of access in the implementation PR.
 
 **Check:** printed box, blurred/handwritten sample, bad MIME/oversize, OCR timeout, malformed LLM JSON, unavailable Gemma, unavailable both LLMs, never-invented medicine ID. Verify search remains responsive during OCR work. **Commit now:** `feat(backend): add bounded OCR and safe normalization fallback`.
 
-### B4 — Confirmed facts for agent and slips
+### B4 — Confirmed facts for agent and slips [DONE - committed `5c6917e`]
 
 Expose private, authenticated read-only catalogue lookup to the agent with reviewed Hindi/English usage summaries where present. Return no explanation when summary is absent. Ensure public compare response includes verified product code/source/date for the frontend print slip. No backend report-history API or original-image storage.
 
 **Check:** agent token required, unknown ID returns 404, missing summary is explicit, print fields match source JSON exactly. **Commit now:** `feat(backend): expose reviewed medicine facts for agent and slip`.
 
-### B5 — Places and routing
+### B5 — Places and routing [DONE]
 
 Curate a small, source-verified Kendra coordinate list with city/address/contact/hours only where known. Add a bounded city selector. Query OSM-derived pharmacy/clinic/hospital places through a rate-limited, cached backend adapter; show their provenance and do **not** relabel them as Kendras. Use OSRM GeoJSON route/steps with an explicitly configured driving profile; add walking only with a real foot profile. Limit coordinates, search radius and response size.
 

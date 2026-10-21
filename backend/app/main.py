@@ -10,12 +10,14 @@ from starlette.exceptions import HTTPException
 from app.api.catalogue import router as catalogue_router
 from app.api.internal import router as internal_router
 from app.api.ocr import router as ocr_router
+from app.api.places import router as places_router
 from app.catalogue.service import CatalogueService
 from app.config import Settings
 from app.errors import AppError, ErrorEnvelope, error_response
 from app.middleware import RequestGuardMiddleware
 from app.normalization.providers import OCRNormalizer
 from app.ocr.service import OCRService
+from app.places.service import PlacesService
 
 
 logger = logging.getLogger("aushadhai.api")
@@ -40,9 +42,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.catalogue,
         OCRNormalizer(config),
     )
+    app.state.places = PlacesService(config)
     app.include_router(catalogue_router)
     app.include_router(ocr_router)
     app.include_router(internal_router)
+    app.include_router(places_router)
 
     app.add_middleware(
         RequestGuardMiddleware,
@@ -118,8 +122,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {
             "ocr": app.state.ocr.ocr_available,
             "normalizer": app.state.ocr.normalizer.available,
-            "stores": False,
-            "routes": False,
+            "stores": True,
+            "routes": True,
             "whatsapp": False,
             "calling": False,
         }

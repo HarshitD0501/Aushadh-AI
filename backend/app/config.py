@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     groq_normalizer_model: str | None = None
     normalization_timeout_seconds: float = Field(default=4.0, ge=0.5, le=10)
     agent_backend_token: SecretStr | None = None
+    osrm_base_url: str = "https://router.project-osrm.org"
+    overpass_base_url: str = "https://overpass-api.de/api/interpreter"
+    places_cache_ttl_seconds: int = 900
 
     @field_validator("app_origin")
     @classmethod

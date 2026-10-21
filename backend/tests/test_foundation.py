@@ -40,8 +40,8 @@ class FoundationTests(unittest.TestCase):
             {
                 "ocr": False,
                 "normalizer": False,
-                "stores": False,
-                "routes": False,
+                "stores": True,
+                "routes": True,
                 "whatsapp": False,
                 "calling": False,
             },
