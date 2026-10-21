@@ -8,10 +8,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
 from app.api.catalogue import router as catalogue_router
+from app.api.ocr import router as ocr_router
 from app.catalogue.service import CatalogueService
 from app.config import Settings
 from app.errors import AppError, ErrorEnvelope, error_response
 from app.middleware import RequestGuardMiddleware
+from app.normalization.providers import OCRNormalizer
+from app.ocr.service import OCRService
 
 
 logger = logging.getLogger("aushadhai.api")
@@ -31,7 +34,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = config
     app.state.catalogue = CatalogueService.from_path()
+    app.state.ocr = OCRService(
+        config,
+        app.state.catalogue,
+        OCRNormalizer(config),
+    )
     app.include_router(catalogue_router)
+    app.include_router(ocr_router)
 
     app.add_middleware(
         RequestGuardMiddleware,
@@ -105,8 +114,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def capabilities() -> dict[str, bool]:
         # Set each flag true only after its phase and actual configuration work.
         return {
-            "ocr": False,
-            "normalizer": False,
+            "ocr": app.state.ocr.ocr_available,
+            "normalizer": app.state.ocr.normalizer.available,
             "stores": False,
             "routes": False,
             "whatsapp": False,
