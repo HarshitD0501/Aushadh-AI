@@ -1,5 +1,4 @@
-# AushadhAi
-
+# Aushadh](../../../../../Downloads/Git_Team_Workflow_Guide.pdf)
 **Make the cost of medicine visible before it is paid.**
 
 This repository is the documentation-first starting point for a three-person hackathon team. The application code has **not** been created yet. The first working milestone is simple: enter a brand or molecule, tolerate misspellings, and show a **verified, like-for-like** branded price against a Jan Aushadhi price with the saving as the headline. If the data is missing or the strength/form/pack does not match, the product must say so instead of calculating a saving.

@@ -100,10 +100,19 @@ def build_groq_llm(settings: Settings) -> groq.LLM:
 
 
 class AushadhAgent(Agent):
-    """Agent with one immutable, read-only fact tool and no mutation tools."""
+    """Agent with authenticated read-only fact tools and no mutation tools."""
 
-    def __init__(self, *, llm: groq.LLM, facts: tuple[VerifiedFact, ...] = ()) -> None:
+    def __init__(
+        self,
+        *,
+        llm: groq.LLM,
+        facts: tuple[VerifiedFact, ...] = (),
+        backend_tools: Any | None = None,
+        allowed_medicine_ids: frozenset[str] | Sequence[str] = (),
+    ) -> None:
         self._facts = tuple(facts)
+        self._backend_tools = backend_tools
+        self._allowed_medicine_ids = frozenset(allowed_medicine_ids)
         super().__init__(instructions=SYSTEM_POLICY, llm=llm)
 
     @function_tool(name="read_verified_facts", description="Read confirmed call details and backend-verified facts. This tool is read-only.")
@@ -111,6 +120,40 @@ class AushadhAgent(Agent):
         del context
         payload = [{"kind": fact.kind, "label": fact.label, "value": fact.value} for fact in self._facts]
         return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+
+    @function_tool(name="read_verified_medicine", description="Fetch verified usage summary for an allowed medicine ID.")
+    async def read_verified_medicine(self, context: RunContext, medicine_id: str) -> str:
+        del context
+        cleaned = medicine_id.strip()
+        if not self._allowed_medicine_ids or cleaned not in self._allowed_medicine_ids:
+            return json.dumps({"error": "unconfirmed_medicine_id", "message": "Medicine not in call context."})
+        if self._backend_tools is None:
+            return json.dumps({"error": "backend_tools_unavailable"})
+        try:
+            fact = await self._backend_tools.fetch_medicine_usage(cleaned)
+            if fact is not None:
+                if fact not in self._facts:
+                    self._facts = self._facts + (fact,)
+                return json.dumps({"kind": fact.kind, "label": fact.label, "value": fact.value})
+            return json.dumps({"error": "medicine_unavailable", "message": "No verified usage summary found."})
+        except Exception as exc:
+            return json.dumps({"error": "fetch_failed", "message": str(exc)})
+
+    @function_tool(name="read_verified_kendras", description="Find nearby verified Jan Aushadhi Kendras for a confirmed city.")
+    async def read_verified_kendras(self, context: RunContext, city_id: str) -> str:
+        del context
+        if self._backend_tools is None:
+            return json.dumps({"error": "backend_tools_unavailable"})
+        try:
+            facts = await self._backend_tools.lookup_kendras(city_id=city_id)
+            if facts:
+                for f in facts:
+                    if f not in self._facts:
+                        self._facts = self._facts + (f,)
+                return json.dumps([{"kind": f.kind, "label": f.label, "value": f.value} for f in facts])
+            return json.dumps({"error": "no_kendras_found", "message": "No verified Jan Aushadhi Kendras found for this location."})
+        except Exception as exc:
+            return json.dumps({"error": "lookup_failed", "message": str(exc)})
 
     async def llm_node(
         self,

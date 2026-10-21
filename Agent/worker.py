@@ -53,6 +53,7 @@ from aushadh_voice.conversation import (  # noqa: E402
     build_groq_llm,
     facts_from_context,
 )
+from aushadh_voice.tools import BackendReadOnlyTools  # noqa: E402
 from aushadh_voice.telemetry import (  # noqa: E402
     call_ref,
     configure_logging,
@@ -86,7 +87,15 @@ async def voice_job(ctx: agents.JobContext) -> None:
 
     event("context_fetched", request_id, ref=ref)
     facts = facts_from_context(context_data)
-    agent = AushadhAgent(llm=build_groq_llm(settings), facts=facts)
+    selected_ids = context_data.get("selected_medicine_ids") or []
+    allowed_med_ids = [mid for mid in selected_ids if isinstance(mid, str)]
+    backend_tools = BackendReadOnlyTools(settings.backend_private_url, settings.agent_backend_token)
+    agent = AushadhAgent(
+        llm=build_groq_llm(settings),
+        facts=facts,
+        backend_tools=backend_tools,
+        allowed_medicine_ids=allowed_med_ids,
+    )
     session = AgentSession(
         llm=agent.llm,
         stt=build_groq_stt(settings),

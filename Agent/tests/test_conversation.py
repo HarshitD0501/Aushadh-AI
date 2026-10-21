@@ -39,7 +39,10 @@ class GroqAgentTests(unittest.TestCase):
         self.assertEqual(configured.groq_voice_model, "llama-3.3-70b-versatile")
         agent = AushadhAgent(llm=build_groq_llm(configured))
         tools = find_function_tools(AushadhAgent)
-        self.assertEqual([tool.info.name for tool in tools], ["read_verified_facts"])
+        tool_names = sorted(tool.info.name for tool in tools)
+        self.assertEqual(tool_names, ["read_verified_facts", "read_verified_kendras", "read_verified_medicine"])
+        for tool in tools:
+            self.assertTrue(tool.info.name.startswith("read_"), f"Tool {tool.info.name} is not strictly read-only")
         self.assertIsNotNone(agent)
 
     def test_model_can_be_overridden_by_server_config(self) -> None:
