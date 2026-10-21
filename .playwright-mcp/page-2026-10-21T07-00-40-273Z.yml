@@ -1,0 +1,254 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - navigation [ref=e4]:
+      - img "Aayogya" [ref=e6]
+      - generic [ref=e7]:
+        - link "The Problem" [ref=e8] [cursor=pointer]:
+          - /url: "#problem"
+        - link "Features" [ref=e9] [cursor=pointer]:
+          - /url: "#features"
+        - link "Trust" [ref=e10] [cursor=pointer]:
+          - /url: "#trust"
+        - link "Pricing" [ref=e11] [cursor=pointer]:
+          - /url: "#pricing"
+      - generic [ref=e12]:
+        - link "Sign In" [ref=e13] [cursor=pointer]:
+          - /url: "#login"
+        - button "Try Live Demo" [ref=e14] [cursor=pointer]
+    - banner [ref=e17]:
+      - generic [ref=e18]:
+        - generic [ref=e19]: Non-clinical · Doctor-first
+        - heading [level=1] [ref=e21]:
+          - text: Your medicines,finally
+          - mark [ref=e22]: made clear.
+        - generic [ref=e23]:
+          - generic [ref=e24]: One record across every doctor.
+          - generic [ref=e25]: Dangerous drug combinations, caught early.
+          - generic [ref=e26]: WhatsApp reminders your parents actually read.
+          - generic [ref=e27]: Family can watch over elders from anywhere.
+        - paragraph [ref=e28]: Aayogya reads prescriptions from every doctor, explains them in plain language, flags dangerous drug interactions, and tracks fair generic prices — while keeping every clinical decision strictly with your registered doctor.
+        - generic [ref=e29]:
+          - button "Launch Live Demo" [ref=e30] [cursor=pointer]
+          - link "See the problem" [ref=e33] [cursor=pointer]:
+            - /url: "#problem"
+        - generic [ref=e34]:
+          - generic [ref=e35]: Interaction safety
+          - generic [ref=e39]: Fair prices
+          - generic [ref=e43]: WhatsApp tracking
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]: NOW SPEAKING • SAHAYAK
+          - generic [ref=e58]: 00:34 / 01:30
+        - heading "Aapka dawai saathi" [level=3] [ref=e59]
+        - paragraph [ref=e60]: Har dose ka reminder, aur aapki report saral bhasha mein — har clinical faisla aapke doctor ke paas.
+        - button "Pause voice preview" [ref=e100] [cursor=pointer]
+    - generic [ref=e107]:
+      - generic [ref=e108]:
+        - generic [ref=e109]: The Problem
+        - heading [level=2] [ref=e110]:
+          - text: Managing medicines on paper is
+          - mark [ref=e111]: quietly failing
+          - text: millions of families.
+        - paragraph [ref=e112]: Pick a problem below to see what it really costs — then see how Aayogya closes the gap.
+      - generic [ref=e113]:
+        - generic [ref=e114]:
+          - button "Missed doses" [ref=e115] [cursor=pointer]
+          - button "Many doctors, no shared view" [ref=e123] [cursor=pointer]
+          - button "Overpaying for medicines" [ref=e133] [cursor=pointer]
+          - button "Missed follow-ups" [ref=e141] [cursor=pointer]
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - generic [ref=e152]: ≈ 50%
+            - generic [ref=e153]: of patients with chronic illness don't take medicines as prescribed (WHO)
+          - generic [ref=e154]:
+            - generic [ref=e155]:
+              - generic [ref=e156]: Taken as prescribed
+              - generic [ref=e159]: 50%
+            - generic [ref=e160]:
+              - generic [ref=e161]: Missed or irregular
+              - generic [ref=e164]: 50%
+          - paragraph [ref=e165]: Half of every long-term prescription is effectively wasted — not because the medicine fails, but because doses are missed.
+      - paragraph [ref=e166]:
+        - text: "Adherence figure: WHO,"
+        - emphasis [ref=e167]: Adherence to Long-Term Therapies
+        - text: . Price and visit figures are illustrative of patterns Aayogya is built to fix.
+    - generic [ref=e168]:
+      - generic [ref=e169]:
+        - generic [ref=e170]: What you get
+        - heading [level=2] [ref=e171]:
+          - text: Everything your prescriptions need,
+          - mark [ref=e172]: under one roof.
+        - paragraph [ref=e173]: Tap a capability to see it in action.
+      - generic [ref=e174]:
+        - generic [ref=e175]:
+          - button [ref=e176] [cursor=pointer]:
+            - strong [ref=e184]: Prescription OCR
+          - button "Interaction safety check Safety moat" [ref=e187] [cursor=pointer]:
+            - generic [ref=e191]:
+              - strong [ref=e192]: Interaction safety check
+              - generic [ref=e193]: Safety moat
+          - button [ref=e196] [cursor=pointer]:
+            - strong [ref=e202]: Plain-language explanations
+          - button [ref=e205] [cursor=pointer]:
+            - strong [ref=e211]: Fair price comparison
+          - button [ref=e214] [cursor=pointer]:
+            - strong [ref=e220]: Nearby chemists
+          - button [ref=e223] [cursor=pointer]:
+            - strong [ref=e229]: WhatsApp reminders
+        - generic [ref=e232]:
+          - heading "Interaction safety check" [level=3] [ref=e236]
+          - paragraph [ref=e237]: Checks interactions across the salts of every active medicine you hold — across all your doctors. Never called “guaranteed safe”.
+          - generic [ref=e238]:
+            - generic [ref=e239]: Aspirin
+            - generic [ref=e240]: ×
+            - generic [ref=e241]: Ibuprofen
+            - generic [ref=e242]: Bleeding risk — confirm with your doctor
+    - generic [ref=e247]:
+      - generic [ref=e248]:
+        - generic [ref=e249]: "#1"
+        - strong [ref=e250]: Patient Choice
+        - paragraph [ref=e251]: We're dedicated to your family's comfort and health — making Aayogya a trusted choice across India.
+      - generic [ref=e252]:
+        - generic [ref=e253]:
+          - generic [ref=e254]: 0K+
+          - generic [ref=e255]: Indian medicines mapped
+          - generic [ref=e256]: Brand → salt catalogue powering every parse.
+        - generic [ref=e257]:
+          - generic [ref=e258]: 0K+
+          - generic [ref=e259]: Drug interactions catalogued
+          - generic [ref=e260]: Curated, cited safety data we check against.
+        - generic [ref=e261]:
+          - generic [ref=e262]: 0+
+          - generic [ref=e263]: Languages, voice & text
+          - generic [ref=e264]: Hindi, Hinglish and more — spoken, not typed.
+    - generic [ref=e266]:
+      - generic [ref=e267]:
+        - generic [ref=e268]: Built to be trusted
+        - heading [level=2] [ref=e269]:
+          - text: A navigator,
+          - mark [ref=e270]: not a doctor.
+        - paragraph [ref=e271]: Under India's Telemedicine Practice Guidelines, an AI platform may not diagnose or prescribe. Aayogya is built around that line — it explains and organises, and defers every clinical call to a registered medical practitioner.
+        - generic [ref=e272]:
+          - generic [ref=e273]: FastAPI + LangGraph
+          - generic [ref=e274]: Gemini Vision OCR
+          - generic [ref=e275]: HL7 FHIR R4 (ABDM)
+          - generic [ref=e276]: DPDP-aligned
+          - generic [ref=e277]: Data localized in India
+      - generic [ref=e278]:
+        - generic [ref=e285]:
+          - strong [ref=e286]: Defers to your doctor
+          - text: Aayogya never diagnoses, prescribes, or changes a dose. Every clinical-adjacent answer ends by asking you to confirm with your doctor.
+        - generic [ref=e292]:
+          - strong [ref=e293]: Per-patient isolation
+          - text: Every query and every record is bounded to your authenticated session. No cross-patient leakage, by design.
+        - generic [ref=e299]:
+          - strong [ref=e300]: Human-in-the-loop
+          - text: Nothing is scheduled, flagged, or saved until you review and confirm exactly what we read from your prescription.
+        - generic [ref=e307]:
+          - strong [ref=e308]: Sourced interaction data
+          - text: Interactions are checked against curated, cited rows — shown as “checked against N known interactions”, never an absolute guarantee.
+    - generic [ref=e309]:
+      - generic [ref=e310]:
+        - generic [ref=e311]: Simple pricing
+        - heading [level=2] [ref=e312]:
+          - text: One plan.
+          - mark [ref=e313]: ₹99 a month.
+        - paragraph [ref=e314]: No insurance paperwork, no per-feature upsells. Safety and understanding are free forever; the adherence engine is Pro.
+      - generic [ref=e315]:
+        - generic [ref=e316]:
+          - generic [ref=e317]: Free
+          - generic [ref=e318]:
+            - generic [ref=e319]: ₹0
+            - generic [ref=e320]: forever
+          - paragraph [ref=e321]: Everything you need to understand your medicines and stay safe.
+          - list [ref=e322]:
+            - listitem [ref=e323]: Prescription upload + OCR parsing
+            - listitem [ref=e327]: Plain-language explanations
+            - listitem [ref=e331]: Drug-interaction safety flag
+            - listitem [ref=e335]: Health records timeline
+            - listitem [ref=e339]: Emergency “Call 108” card
+          - button "Start free" [ref=e343] [cursor=pointer]
+        - generic [ref=e347]:
+          - generic [ref=e348]: Most loved
+          - generic [ref=e349]: Pro
+          - generic [ref=e350]:
+            - generic [ref=e351]: ₹99
+            - generic [ref=e352]: / month
+          - paragraph [ref=e353]: The full adherence engine — reminders, prices, follow-ups and voice.
+          - list [ref=e354]:
+            - listitem [ref=e355]: Everything in Free
+            - listitem [ref=e359]: Medicine price comparison + nearby chemists
+            - listitem [ref=e363]: WhatsApp dose reminders
+            - listitem [ref=e367]: Follow-up appointment reminders
+            - listitem [ref=e371]: Voice check-in calls (usage-limited)
+            - listitem [ref=e375]: Adherence tracking + trends
+          - button "Go Pro" [ref=e379] [cursor=pointer]
+      - paragraph [ref=e383]: Pay by UPI or card. In this demo, Pro unlocks instantly — no gateway, no charge.
+    - generic [ref=e388]:
+      - generic [ref=e389]:
+        - generic [ref=e390]: Welcome back
+        - heading [level=2] [ref=e391]:
+          - text: Sign in, or
+          - mark [ref=e392]: try a live patient.
+        - paragraph [ref=e393]: Pick a pre-loaded scenario to explore the real dashboard instantly — no signup — or sign in with your own credentials.
+        - generic [ref=e394]:
+          - button "MK Meera Family Caregiver" [ref=e395] [cursor=pointer]:
+            - generic [ref=e396]: MK
+            - generic [ref=e397]:
+              - strong [ref=e398]: Meera
+              - generic [ref=e399]: Family Caregiver
+          - button "RK Ramesh Cardio & Diabetes" [ref=e400] [cursor=pointer]:
+            - generic [ref=e401]: RK
+            - generic [ref=e402]:
+              - strong [ref=e403]: Ramesh
+              - generic [ref=e404]: Cardio & Diabetes
+          - button "SD Shanti Safety Alert Demo" [ref=e405] [cursor=pointer]:
+            - generic [ref=e406]: SD
+            - generic [ref=e407]:
+              - strong [ref=e408]: Shanti
+              - generic [ref=e409]: Safety Alert Demo
+          - button "AS Aarav Schedule & SOS" [ref=e410] [cursor=pointer]:
+            - generic [ref=e411]: AS
+            - generic [ref=e412]:
+              - strong [ref=e413]: Aarav
+              - generic [ref=e414]: Schedule & SOS
+      - generic [ref=e415]:
+        - heading "Sign in to Aayogya" [level=3] [ref=e416]
+        - generic [ref=e417]: Email or phone
+        - textbox "ramesh@demo.in" [ref=e418]
+        - generic [ref=e419]: Password
+        - textbox "pass1234" [ref=e420]
+        - button "Sign in" [ref=e421] [cursor=pointer]
+        - paragraph [ref=e422]:
+          - text: Demo accounts use password
+          - code [ref=e423]: pass1234
+          - text: .
+    - contentinfo [ref=e424]:
+      - generic [ref=e425]:
+        - generic [ref=e426]:
+          - img "Aayogya" [ref=e428]
+          - paragraph [ref=e429]: Your medicines, made clear. A non-clinical explainer and adherence companion — never a substitute for your doctor.
+        - generic [ref=e430]:
+          - generic [ref=e431]:
+            - generic [ref=e432]: Product
+            - link "Features" [ref=e433] [cursor=pointer]:
+              - /url: "#features"
+            - link "Pricing" [ref=e434] [cursor=pointer]:
+              - /url: "#pricing"
+            - link "The problem" [ref=e435] [cursor=pointer]:
+              - /url: "#problem"
+          - generic [ref=e436]:
+            - generic [ref=e437]: Trust
+            - link "Safety & compliance" [ref=e438] [cursor=pointer]:
+              - /url: "#trust"
+            - link "Sign in" [ref=e439] [cursor=pointer]:
+              - /url: "#login"
+          - generic [ref=e440]:
+            - generic [ref=e441]: Emergency
+            - link "Call 108" [ref=e442] [cursor=pointer]:
+              - /url: tel:108
+            - generic [ref=e447]: In a medical emergency, call 108 immediately.
+      - generic [ref=e448]:
+        - generic [ref=e449]: © 2026 Aayogya. Not medical advice — always consult your doctor.
+        - generic [ref=e450]: Data localized in India · DPDP-aligned
