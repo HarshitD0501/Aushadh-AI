@@ -24,9 +24,12 @@ import type {
 } from './types';
 import {
   DEV_FIXTURE_CATALOGUE,
+  getFixtureCities,
   getFixtureCompare,
   getFixtureOcr,
-  getFixtureSearch
+  getFixtureRoute,
+  getFixtureSearch,
+  getFixtureStores
 } from './fixtures';
 
 export class ApiClientError extends Error {
@@ -228,26 +231,48 @@ export class ApiClient {
   }
 
   // Stores & routes
-  async getCities(signal?: AbortSignal): Promise<CityRecord[]> {
-    return this.request<CityRecord[]>('/api/v1/cities', { signal });
+  async getCities(signal?: AbortSignal): Promise<CityRecord[] & { isFixture?: boolean }> {
+    try {
+      const res = await this.request<CityRecord[]>('/api/v1/cities', { signal });
+      this.lastRequestUsedFixture = false;
+      return res;
+    } catch (err) {
+      if (this.devFixturesEnabled && err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+        this.lastRequestUsedFixture = true;
+        const fixtureRes = getFixtureCities();
+        return Object.assign(fixtureRes, { isFixture: true });
+      }
+      throw err;
+    }
   }
 
   async getStores(
     params: { city_id?: string; lat?: number; lng?: number },
     signal?: AbortSignal
-  ): Promise<StoreRecord[]> {
+  ): Promise<StoreRecord[] & { isFixture?: boolean }> {
     const query = new URLSearchParams();
     if (params.city_id) query.set('city_id', params.city_id);
     if (typeof params.lat === 'number') query.set('lat', params.lat.toString());
     if (typeof params.lng === 'number') query.set('lng', params.lng.toString());
 
-    return this.request<StoreRecord[]>(`/api/v1/stores?${query.toString()}`, { signal });
+    try {
+      const res = await this.request<StoreRecord[]>(`/api/v1/stores?${query.toString()}`, { signal });
+      this.lastRequestUsedFixture = false;
+      return res;
+    } catch (err) {
+      if (this.devFixturesEnabled && err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+        this.lastRequestUsedFixture = true;
+        const fixtureRes = getFixtureStores(params);
+        return Object.assign(fixtureRes, { isFixture: true });
+      }
+      throw err;
+    }
   }
 
   async getRoute(
     params: { from_lat: number; from_lng: number; to_lat: number; to_lng: number },
     signal?: AbortSignal
-  ): Promise<RouteResponse> {
+  ): Promise<RouteResponse & { isFixture?: boolean }> {
     const query = new URLSearchParams({
       from_lat: params.from_lat.toString(),
       from_lng: params.from_lng.toString(),
@@ -255,7 +280,19 @@ export class ApiClient {
       to_lng: params.to_lng.toString(),
       mode: 'driving'
     });
-    return this.request<RouteResponse>(`/api/v1/routes?${query.toString()}`, { signal });
+
+    try {
+      const res = await this.request<RouteResponse>(`/api/v1/routes?${query.toString()}`, { signal });
+      this.lastRequestUsedFixture = false;
+      return res;
+    } catch (err) {
+      if (this.devFixturesEnabled && err instanceof ApiClientError && err.code === 'NETWORK_ERROR') {
+        this.lastRequestUsedFixture = true;
+        const fixtureRes = getFixtureRoute(params.from_lat, params.from_lng, params.to_lat, params.to_lng);
+        return { ...fixtureRes, isFixture: true };
+      }
+      throw err;
+    }
   }
 
   // Reminders

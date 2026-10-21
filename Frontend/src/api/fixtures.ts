@@ -5,11 +5,14 @@
  */
 
 import type {
+  CityRecord,
   CompareRequest,
   CompareResponse,
   OcrResponse,
   PublicCatalogueResponse,
-  SearchResponse
+  RouteResponse,
+  SearchResponse,
+  StoreRecord
 } from './types';
 
 export const DEV_FIXTURE_CATALOGUE: PublicCatalogueResponse = {
@@ -364,6 +367,108 @@ export function getFixtureOcr(fileName?: string): OcrResponse {
     ],
     warnings: [
       'Extracted medicine names are candidate suggestions only. Confirm exact formulation before proceeding.'
+    ]
+  };
+}
+
+export const DEV_FIXTURE_CITIES: CityRecord[] = [
+  { city_id: 'delhi', name: 'New Delhi', state: 'Delhi' },
+  { city_id: 'jaipur', name: 'Jaipur', state: 'Rajasthan' },
+  { city_id: 'mumbai', name: 'Mumbai', state: 'Maharashtra' },
+  { city_id: 'bengaluru', name: 'Bengaluru', state: 'Karnataka' }
+];
+
+export const DEV_FIXTURE_STORES: StoreRecord[] = [
+  {
+    kind: 'kendra',
+    name: 'Jan Aushadhi Kendra - AIIMS Ansari Nagar',
+    address: 'Near Gate No. 2, AIIMS Campus, Ansari Nagar, New Delhi',
+    lat: 28.5672,
+    lng: 77.2100,
+    distance_m: 1200,
+    contact: '+91 11 2658 8500',
+    hours: '08:00 - 20:00 (Mon-Sat)',
+    source: 'Official PMBI Jan Aushadhi Kendra Directory'
+  },
+  {
+    kind: 'kendra',
+    name: 'Jan Aushadhi Kendra - Connaught Place',
+    address: 'Block P, Connaught Circus, Central Delhi',
+    lat: 28.6315,
+    lng: 77.2167,
+    distance_m: 3400,
+    contact: '+91 11 2334 1122',
+    hours: '09:00 - 21:00 (Daily)',
+    source: 'Official PMBI Jan Aushadhi Kendra Directory'
+  },
+  {
+    kind: 'kendra',
+    name: 'Jan Aushadhi Kendra - SMS Hospital Road',
+    address: 'Near Gate 3, Sawai Man Singh Hospital, JLN Marg, Jaipur',
+    lat: 26.8920,
+    lng: 75.8150,
+    distance_m: 1500,
+    contact: '+91 141 2560 291',
+    hours: '08:00 - 22:00 (Daily)',
+    source: 'Official PMBI Jan Aushadhi Kendra Directory'
+  },
+  {
+    kind: 'pharmacy',
+    name: 'Apollo Pharmacy - Green Park',
+    address: 'Main Market, Green Park, New Delhi',
+    lat: 28.5580,
+    lng: 77.2060,
+    distance_m: 2100,
+    contact: '+91 11 4165 2200',
+    hours: '24 Hours',
+    source: 'OpenStreetMap Community Records'
+  },
+  {
+    kind: 'hospital',
+    name: 'Safdarjung Hospital OPD Dispensary',
+    address: 'Ring Road, Opposite AIIMS, New Delhi',
+    lat: 28.5680,
+    lng: 77.2070,
+    distance_m: 1400,
+    contact: '+91 11 2616 5060',
+    hours: '08:00 - 16:00 (Mon-Sat)',
+    source: 'Government Health Facility Directory'
+  }
+];
+
+export function getFixtureCities(): CityRecord[] {
+  return DEV_FIXTURE_CITIES;
+}
+
+export function getFixtureStores(params: { city_id?: string; lat?: number; lng?: number }): StoreRecord[] {
+  if (params.city_id === 'jaipur') {
+    return DEV_FIXTURE_STORES.filter((s) => s.address?.includes('Jaipur'));
+  }
+  return DEV_FIXTURE_STORES;
+}
+
+export function getFixtureRoute(fromLat: number, fromLng: number, toLat: number, toLng: number): RouteResponse {
+  // Approximate midpoints for realistic polyline
+  const midLat = (fromLat + toLat) / 2 + 0.002;
+  const midLng = (fromLng + toLng) / 2 + 0.003;
+
+  return {
+    distance_m: 2450,
+    duration_s: 480,
+    profile: 'driving',
+    provider: 'osrm',
+    geometry_geojson: {
+      type: 'LineString',
+      coordinates: [
+        [fromLng, fromLat],
+        [midLng, midLat],
+        [toLng, toLat]
+      ]
+    },
+    steps: [
+      { instruction: 'Head north on current road', distance_m: 450, duration_s: 90 },
+      { instruction: 'Turn right onto Mahatma Gandhi Marg', distance_m: 1200, duration_s: 240 },
+      { instruction: 'Turn left toward Jan Aushadhi Kendra entrance', distance_m: 800, duration_s: 150 }
     ]
   };
 }
