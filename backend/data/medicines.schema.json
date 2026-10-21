@@ -84,7 +84,22 @@
         "source": { "$ref": "#/$defs/source" },
         "reviewed_by": { "type": ["string", "null"] },
         "reviewed_on": { "oneOf": [{ "$ref": "#/$defs/date" }, { "type": "null" }] },
-        "record_status": { "enum": ["verified", "incomplete", "retired"] }
+        "record_status": { "enum": ["verified", "incomplete", "retired"] },
+        "usage_summary": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["hi", "en", "source"],
+              "properties": {
+                "hi": { "type": "string", "minLength": 1 },
+                "en": { "type": "string", "minLength": 1 },
+                "source": { "$ref": "#/$defs/source" }
+              }
+            },
+            { "type": "null" }
+          ]
+        }
       }
     }
   }

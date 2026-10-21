@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException
 
 from app.api.catalogue import router as catalogue_router
+from app.api.internal import router as internal_router
 from app.api.ocr import router as ocr_router
 from app.catalogue.service import CatalogueService
 from app.config import Settings
@@ -41,6 +42,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.include_router(catalogue_router)
     app.include_router(ocr_router)
+    app.include_router(internal_router)
 
     app.add_middleware(
         RequestGuardMiddleware,

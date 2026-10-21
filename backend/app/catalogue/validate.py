@@ -110,6 +110,8 @@ def validate_catalogue(
         _validate_source(item["source"], f"{path}.source", today, errors)
         _validate_price(item["pmbjp_price"], f"{path}.pmbjp_price", today, errors)
         _validate_price(item["nppa_ceiling_price"], f"{path}.nppa_ceiling_price", today, errors)
+        if item.get("usage_summary") is not None:
+            _validate_source(item["usage_summary"]["source"], f"{path}.usage_summary.source", today, errors)
         if item["pmbjp_price"] is not None and item["pmbjp_price"]["unit"] != "pack":
             errors.append(f"{path}: PMBJP price must use the exact pack basis")
         if item["nppa_ceiling_price"] is not None and item["nppa_ceiling_price"]["unit"] not in {

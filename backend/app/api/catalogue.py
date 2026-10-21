@@ -68,6 +68,14 @@ class SourcedPrice(BaseModel):
     checked_on: str
 
 
+class MedicineSource(BaseModel):
+    source_url: str
+    document_ref: str
+    row_ref: str
+    checked_on: str
+    source_as_of: str
+
+
 class CompareLine(BaseModel):
     medicine_id: str
     brand_id: str | None
@@ -87,6 +95,7 @@ class CompareLine(BaseModel):
     saving_percent: float | None
     comparison_basis: str
     excluded_reason: str | None
+    source: MedicineSource | None = None
 
 
 class CompareTotals(BaseModel):

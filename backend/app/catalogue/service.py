@@ -258,6 +258,7 @@ class CatalogueService:
                 "saving_percent": _percent(saving, line_market_total) if saving is not None else None,
                 "comparison_basis": _pack_label(item),
                 "excluded_reason": reason,
+                "source": item["source"],
             })
         difference = market_total - generic_total
         return {

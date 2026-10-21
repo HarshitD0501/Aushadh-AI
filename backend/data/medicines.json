@@ -134,7 +134,18 @@
       },
       "reviewed_by": "HarshitD05",
       "reviewed_on": "2026-10-21",
-      "record_status": "verified"
+      "record_status": "verified",
+      "usage_summary": {
+        "hi": "टेल्मिसार्टन उच्च रक्तचाप (ब्लड प्रेशर) की दवा है। इसे डॉक्टर की सलाह के अनुसार ही लें।",
+        "en": "Telmisartan is used to treat high blood pressure (hypertension). Take only as directed by your doctor.",
+        "source": {
+          "source_url": "https://janaushadhi.gov.in/product-portfolio/product-view-list",
+          "document_ref": "PMBI Essential Medicines Clinical Reference & CDSCO Indication Database",
+          "row_ref": "Drug Code 300; Telmisartan 40mg reviewed indication summary",
+          "checked_on": "2026-10-21",
+          "source_as_of": "2026-10-21"
+        }
+      }
     },
     {
       "medicine_id": "pmbjp-291",
