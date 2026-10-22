@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useScrollReveal, useScrollCountUp } from "@/lib/gsap";
 import { DEMO_USERS, getPublicPrices, login } from "@/lib/api";
 import {
@@ -261,6 +262,10 @@ export default function Landing({
             
             <Link
               href="/app"
+              className="sketchy-btn bg-brand-orange text-brand-navy border-2 border-brand-navy px-6 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover hover:translate-x-[2px] hover:translate-y-[2px] flex items-center gap-2"
+            >
+              Launch App / PWA <ArrowRight size={14} />
+            </Link>
               className="sketchy-btn bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy px-4 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover flex items-center gap-1.5"
             >
               <Tag size={13} className="text-brand-orange" />

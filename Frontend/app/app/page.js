@@ -1,5 +1,14 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
+import Navbar from "@/components/Navbar";
+import SearchPage from "../search/page";
+import ScanPage from "../scan/page";
+import StoresPage from "../stores/page";
+import HistoryPage from "../history/page";
+
+export default function AppShell() {
+  const [activeTab, setActiveTab] = useState("search");
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api, getToken, clearToken, loginAsDemo, setActivePatientId } from "@/lib/api";
@@ -50,6 +59,19 @@ function AppContent() {
         }
       }
 
+  return (
+    <div className="min-h-screen bg-brand-cream text-brand-navy flex flex-col">
+      {/* Exactly ONE Unified Navbar */}
+      <Navbar onTabChange={handleTabChange} activeTab={activeTab} inAppShell={true} />
+
+      {/* Embedded Active Tool Content */}
+      <div className="flex-1">
+        {activeTab === "search" && <SearchPage hideNavbar={true} onNavigateTab={handleTabChange} />}
+        {activeTab === "scan" && <ScanPage hideNavbar={true} onNavigateTab={handleTabChange} />}
+        {activeTab === "stores" && <StoresPage hideNavbar={true} onNavigateTab={handleTabChange} />}
+        {activeTab === "history" && <HistoryPage hideNavbar={true} onNavigateTab={handleTabChange} />}
+      </div>
+    </div>
       // 3. Fallback: Automatically load primary demo patient (Ramesh Kulkarni)
       // Ensures the PWA workspace is ALWAYS live, populated, and never static!
       try {

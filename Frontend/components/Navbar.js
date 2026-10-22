@@ -25,6 +25,13 @@ export default function Navbar({ onTabChange, activeTab, inAppShell = false }) {
     return pathname === item.href;
   };
 
+  const handleNavClick = (e, item) => {
+    if (isShell && onTabChange) {
+      e.preventDefault();
+      onTabChange(item.tab);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b-2 border-brand-navy shadow-sm transition-all duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
@@ -93,6 +100,7 @@ export default function Navbar({ onTabChange, activeTab, inAppShell = false }) {
             <span>{language === "en" ? "हिन्दी" : "English"}</span>
           </button>
 
+          {/* Action Button: In App -> Return to Landing | In Landing -> Launch PWA */}
           {/* Action Button */}
           {isShell ? (
             <Link
