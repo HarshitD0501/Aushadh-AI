@@ -297,7 +297,7 @@ export default function Landing({
           2. SPLIT HERO SECTION
           ============================================================== */}
       <header className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
           
           {/* Left: Content */}
           <div className="lg:col-span-6 flex flex-col justify-center items-start space-y-8 reveal active">
@@ -349,9 +349,7 @@ export default function Landing({
               <span className="flex items-center gap-1.5"><Tag size={16} className="text-brand-orange" /> Jan Aushadhi</span>
               <span className="flex items-center gap-1.5"><MessageCircleHeart size={16} className="text-brand-orange" /> WhatsApp Bot</span>
             </div>
-          </div>
 
-          
             <div className="pt-2">
               <Link
                 href="/app"
@@ -361,12 +359,13 @@ export default function Landing({
                 <span>Open Instant PWA Tool (/app) →</span>
               </Link>
             </div>
+          </div>
 
           {/* Right: Player Card */}
-          <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end reveal delay-100 active">
+          <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end reveal delay-100 active w-full">
             {/* Decorative Arrow SVG */}
             <svg
-              className="absolute -top-12 -left-12 w-24 h-24 text-brand-navy/20 transform rotate-12 z-0"
+              className="absolute -top-12 -left-12 w-24 h-24 text-brand-navy/20 transform rotate-12 z-0 hidden sm:block"
               viewBox="0 0 100 100"
               fill="none"
               stroke="currentColor"
@@ -885,54 +884,162 @@ export default function Landing({
 // ---- Sub-Component: Sahayak Voice Player Card ----
 function SahayakPlayerCard({ onLaunchDemo }) {
   const [isPlaying, setIsPlaying] = useState(true);
+  const [response, setResponse] = useState("confirmed"); // 'confirmed' | 'snooze' | 'missed'
 
   return (
-    <div className="w-full max-w-md bg-brand-white border-2 border-brand-navy sketchy-box p-8 shadow-card relative z-10 transform rotate-1 transition-transform hover:rotate-0 duration-500">
+    <div className="w-full max-w-xl bg-brand-white border-2 border-brand-navy sketchy-box p-6 sm:p-8 shadow-[6px_6px_0px_0px_#1a2234] relative z-10 transform rotate-1 transition-all hover:rotate-0 duration-500">
       {/* Signature Frosted Masking Tape */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-8 bg-brand-cream/80 border-l border-r border-brand-white/50 backdrop-blur-sm transform -rotate-2 opacity-60 shadow-sm" />
+      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-36 h-7 bg-brand-cream/90 border-l border-r border-brand-white/70 backdrop-blur-sm transform -rotate-1 opacity-80 shadow-sm flex items-center justify-center">
+        <span className="text-[9px] font-mono font-bold tracking-widest text-brand-navy/70 uppercase">EVIDENCE CASE #04</span>
+      </div>
 
-      <div className="flex justify-between items-start mb-6">
+      {/* Top Header: Telemetry Status + Duration */}
+      <div className="flex justify-between items-center mb-5 pb-3 border-b-2 border-brand-navy/10">
         <div className="flex items-center gap-2">
-          <Radio size={16} className="text-brand-orange animate-pulse" />
-          <span className="text-[10px] font-bold tracking-[0.2em] text-brand-navy uppercase">
-            Now Speaking · Sahayak
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-orange"></span>
+          </span>
+          <span className="text-[11px] font-bold tracking-[0.2em] text-brand-navy uppercase flex items-center gap-1.5">
+            <Radio size={14} className="text-brand-orange" />
+            Live Adherence Telemetry
           </span>
         </div>
-        <span className="text-xs font-mono text-brand-gray">00:34 / 01:30</span>
+        <div className="flex items-center gap-2">
+          <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-brand-navy text-brand-white rounded">
+            HINDI · HINGLISH
+          </span>
+          <span className="text-xs font-mono text-brand-gray font-bold">00:34 / 01:30</span>
+        </div>
       </div>
 
-      <h3 className="font-serif text-2xl font-medium text-brand-navy leading-tight mb-2">
-        Aapka Dawai Saathi
-      </h3>
-      <p className="text-sm text-brand-gray mb-8 font-light leading-relaxed">
-        "Namaste Ramesh ji! Subah ki BP wali goli Amlong 5 le li? Agar le li toh 'Haan' bole."
-      </p>
-
-      {/* Visualizer audio bars */}
-      <div className="flex items-center justify-between gap-1 h-12 mb-6 px-2 bg-brand-cream/50 rounded-lg border border-brand-navy/5">
-        <div className="w-1 bg-brand-navy h-full bar" />
-        <div className="w-1 bg-brand-navy h-1/2 bar" />
-        <div className="w-1 bg-brand-navy h-3/4 bar" />
-        <div className="w-1 bg-brand-orange h-full bar" />
-        <div className="w-1 bg-brand-orange h-2/3 bar" />
-        <div className="w-1 bg-brand-orange h-1/3 bar" />
-        <div className="w-1 bg-brand-navy h-full bar" />
-        <div className="w-1 bg-brand-navy h-1/2 bar" />
-        <div className="w-1 bg-brand-navy h-3/4 bar" />
-        <div className="w-1 bg-brand-navy h-full bar" />
-        <div className="w-1 bg-brand-navy h-2/3 bar" />
-        <div className="w-1 bg-brand-navy h-1/3 bar" />
-        <div className="w-1 bg-brand-navy h-full bar" />
-        <div className="w-1 bg-brand-peach h-1/2 bar" />
-        <div className="w-1 bg-brand-peach h-full bar" />
-        <div className="w-1 bg-brand-navy h-2/3 bar" />
-        <div className="w-1 bg-brand-navy h-1/3 bar" />
+      {/* Patient Dossier Strip */}
+      <div className="flex items-center justify-between bg-brand-cream/60 border border-brand-navy/15 rounded-lg p-3 mb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-brand-peach/40 border border-brand-navy/30 flex items-center justify-center font-serif font-bold text-brand-navy text-sm">
+            RK
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="font-serif font-bold text-sm text-brand-navy leading-none">Ramesh Kumar</h4>
+              <span className="text-[10px] font-sans font-semibold bg-brand-navy/10 text-brand-navy px-1.5 py-0.5 rounded">71 yrs</span>
+            </div>
+            <p className="text-[11px] text-brand-gray mt-0.5">Hypertension + Type-2 Diabetes</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <span className="text-[10px] font-mono font-bold text-brand-orange block uppercase tracking-wider">Morning Dose</span>
+          <span className="text-[11px] font-mono text-brand-navy">08:15 AM · Scheduled</span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      {/* Active Prescription Medicine Box */}
+      <div className="p-3.5 bg-brand-white border-2 border-brand-navy/20 sketchy-box mb-5">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-2.5">
+            <div className="p-2 bg-brand-orange/15 rounded border border-brand-orange/40 text-brand-navy mt-0.5">
+              <Pill size={16} className="text-brand-orange" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-serif font-bold text-base text-brand-navy">Amlong 5mg</span>
+                <span className="text-[10px] font-mono bg-brand-peach/30 text-brand-navy px-1.5 py-0.5 rounded font-semibold">1 Tab · Post-Breakfast</span>
+              </div>
+              <p className="text-xs text-brand-gray mt-0.5">Salt: <span className="font-mono text-brand-navy">Amlodipine Besylate IP 5mg</span></p>
+            </div>
+          </div>
+          <div className="text-right shrink-0">
+            <span className="inline-block text-[10px] font-bold text-brand-navy bg-brand-orange/20 border border-brand-orange/50 px-2 py-0.5 rounded">
+              Jan Aushadhi: ₹6 (Save 82%)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Voice Transcript Speech Bubble */}
+      <div className="relative mb-5 p-4 bg-brand-cream/80 border-2 border-brand-navy sketchy-box">
+        <div className="flex items-center gap-2 mb-1.5">
+          <PhoneCall size={13} className="text-brand-orange" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-navy">
+            Sahayak Voice Bot (AI Agent)
+          </span>
+        </div>
+        <p className="font-serif text-base sm:text-lg text-brand-navy leading-snug italic">
+          "Namaste Ramesh ji! Subah ki BP wali goli <span className="font-semibold underline decoration-brand-orange decoration-2">Amlong 5</span> le li? Agar le li toh 'Haan' bole."
+        </p>
+
+        {/* Audio Visualizer Waveform */}
+        <div className="flex items-center justify-between gap-1 h-9 mt-3 px-3 bg-brand-white/80 rounded border border-brand-navy/10 overflow-hidden">
+          {[40, 65, 80, 45, 90, 70, 30, 85, 100, 60, 40, 95, 75, 50, 85, 60, 35, 70, 90, 55, 30, 80, 65, 45, 85, 50, 30, 60].map((h, i) => (
+            <div
+              key={i}
+              className={`w-1 rounded-full transition-all duration-300 ${
+                i % 4 === 1
+                  ? "bg-brand-orange"
+                  : i % 4 === 3
+                  ? "bg-brand-peach"
+                  : "bg-brand-navy"
+              }`}
+              style={{
+                height: isPlaying ? `${Math.max(15, (h * ((i % 3) + 1)) % 100)}%` : "20%",
+                opacity: isPlaying ? 0.9 : 0.35,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Single-Tap Interactive Patient Response Buttons */}
+      <div className="mb-5">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-gray block mb-2">
+          Voice or Tap Confirmation:
+        </span>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => setResponse("confirmed")}
+            className={`px-3 py-2 text-xs font-bold rounded border-2 transition-all flex items-center justify-center gap-1.5 ${
+              response === "confirmed"
+                ? "bg-brand-navy text-brand-white border-brand-navy shadow-sketch-hover"
+                : "bg-brand-white text-brand-navy border-brand-navy/30 hover:border-brand-navy"
+            }`}
+          >
+            <Check size={14} className={response === "confirmed" ? "text-brand-orange" : "text-brand-gray"} />
+            <span>Haan, Le Li</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setResponse("snooze")}
+            className={`px-3 py-2 text-xs font-bold rounded border-2 transition-all flex items-center justify-center gap-1.5 ${
+              response === "snooze"
+                ? "bg-brand-navy text-brand-white border-brand-navy shadow-sketch-hover"
+                : "bg-brand-white text-brand-navy border-brand-navy/30 hover:border-brand-navy"
+            }`}
+          >
+            <CalendarClock size={14} className={response === "snooze" ? "text-brand-orange" : "text-brand-gray"} />
+            <span>15 Min Baad</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setResponse("missed")}
+            className={`px-3 py-2 text-xs font-bold rounded border-2 transition-all flex items-center justify-center gap-1.5 ${
+              response === "missed"
+                ? "bg-brand-navy text-brand-white border-brand-navy shadow-sketch-hover"
+                : "bg-brand-white text-brand-navy border-brand-navy/30 hover:border-brand-navy"
+            }`}
+          >
+            <AlertTriangle size={14} className={response === "missed" ? "text-brand-orange" : "text-brand-gray"} />
+            <span>Nahi Li</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Audio Controller & CTA Strip */}
+      <div className="flex items-center gap-4 pt-3 border-t-2 border-brand-navy/10">
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="w-12 h-12 rounded-full bg-brand-orange border-2 border-brand-navy flex items-center justify-center hover:scale-105 transition-transform shadow-sketch-hover cursor-pointer"
+          className="w-12 h-12 rounded-full bg-brand-orange border-2 border-brand-navy flex items-center justify-center hover:scale-105 transition-transform shadow-sketch hover:shadow-sketch-hover cursor-pointer shrink-0"
+          title={isPlaying ? "Pause voice preview" : "Play voice preview"}
         >
           {isPlaying ? (
             <Pause size={18} className="text-brand-navy fill-current" />
@@ -940,17 +1047,35 @@ function SahayakPlayerCard({ onLaunchDemo }) {
             <Play size={18} className="text-brand-navy fill-current translate-x-0.5" />
           )}
         </button>
-        <div className="h-1 bg-brand-navy/10 flex-1 rounded-full overflow-hidden">
-          <div className="h-full bg-brand-navy w-1/3 rounded-full relative">
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-brand-orange rounded-full" />
+
+        <div className="flex-1">
+          <div className="flex justify-between text-[11px] font-mono text-brand-gray mb-1">
+            <span className="font-bold text-brand-navy">{isPlaying ? "Playing voice sample" : "Paused"}</span>
+            <span>00:34 / 01:30</span>
+          </div>
+          <div className="h-2 bg-brand-navy/10 rounded-full overflow-hidden">
+            <div className="h-full bg-brand-navy w-[38%] rounded-full relative">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-brand-orange rounded-full border border-brand-navy" />
+            </div>
           </div>
         </div>
+
         <button
           onClick={onLaunchDemo}
-          className="text-[10px] font-bold uppercase tracking-widest text-brand-navy hover:text-brand-orange transition-colors"
+          className="sketchy-btn bg-brand-navy text-brand-white hover:bg-brand-orange hover:text-brand-navy border-2 border-brand-navy px-4 py-2.5 text-xs font-bold uppercase tracking-widest shadow-sketch transition-all shrink-0 flex items-center gap-1.5"
         >
-          Open App →
+          <span>Demo</span>
+          <ArrowRight size={13} />
         </button>
+      </div>
+
+      {/* Caregiver WhatsApp sync footer notice */}
+      <div className="mt-4 pt-3 border-t border-dashed border-brand-navy/15 flex items-center justify-between text-[11px] text-brand-gray">
+        <span className="flex items-center gap-1.5">
+          <MessageCircleHeart size={14} className="text-brand-orange shrink-0" />
+          <span>Caregiver WhatsApp alert: <strong>Papa marked dose taken ✓</strong></span>
+        </span>
+        <span className="font-mono text-[10px] text-brand-navy/60 font-semibold uppercase">08:16 AM</span>
       </div>
     </div>
   );
