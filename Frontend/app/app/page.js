@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api, getToken, clearToken, loginAsDemo, setActivePatientId } from "@/lib/api";
+import { FIXTURE_DATA } from "@/lib/fixtures";
 import Dashboard from "@/components/Dashboard";
 import Caregiver from "@/components/Caregiver";
 
@@ -12,8 +13,11 @@ function AppContent() {
   const patientParam = searchParams?.get("patient");
   const tabParam = searchParams?.get("tab");
 
-  const [patient, setPatient] = useState(null);
-  const [ready, setReady] = useState(false);
+  const [patient, setPatient] = useState(() => {
+    const requested = patientParam || "ramesh";
+    return FIXTURE_DATA?.patients?.[requested] || FIXTURE_DATA?.patients?.ramesh || null;
+  });
+  const [ready, setReady] = useState(true);
 
   useEffect(() => {
     let alive = true;
@@ -65,11 +69,15 @@ function AppContent() {
     };
   }, [patientParam]);
 
+  const handleGoHome = () => {
+    window.location.href = "/";
+  };
+
   const handleLogout = () => {
     clearToken();
     setActivePatientId(null);
     setPatient(null);
-    router.push("/");
+    window.location.href = "/";
   };
 
   const handleSwitchPatient = async (patientId) => {
@@ -105,7 +113,7 @@ function AppContent() {
       <Caregiver
         caregiver={patient}
         onLogout={handleLogout}
-        onGoHome={() => router.push("/")}
+        onGoHome={handleGoHome}
       />
     );
   }
@@ -114,7 +122,7 @@ function AppContent() {
     <Dashboard
       patient={patient}
       onLogout={handleLogout}
-      onGoHome={() => router.push("/")}
+      onGoHome={handleGoHome}
       onSwitchPatient={handleSwitchPatient}
       initialSection={tabParam || "summary"}
     />

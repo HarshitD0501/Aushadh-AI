@@ -152,7 +152,7 @@ export default function Dashboard({
         1. STATIONARY LEFT VERTICAL NAVBAR DOCK
         Firmly anchored on scrolls, distinct individual section with 2px ink divider
       */}
-      <aside className="w-full md:w-72 lg:w-80 md:h-screen md:sticky md:top-0 bg-brand-cream border-b-2 md:border-b-0 md:border-r-2 border-brand-navy flex flex-col p-4 md:p-5 z-30 overflow-y-auto shrink-0 select-none shadow-sm">
+      <aside className="w-full md:w-72 lg:w-80 md:fixed md:top-0 md:left-0 md:bottom-0 md:h-screen bg-brand-cream border-b-2 md:border-b-0 md:border-r-2 border-brand-navy flex flex-col p-4 md:p-5 z-40 md:overflow-hidden shrink-0 select-none shadow-sm stationary-sidebar">
         
         {/* Brand Lockup Header */}
         <div className="flex items-center gap-3 pb-3.5 border-b-2 border-brand-navy/15">
@@ -182,7 +182,7 @@ export default function Dashboard({
         )}
 
         {/* Navigation Dossier Section Tabs */}
-        <nav className="my-1 space-y-1 flex-1 overflow-y-auto pr-1">
+        <nav className="my-1 space-y-1 flex-1 min-h-0 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(26,34,52,0.25) transparent' }}>
           <div className="text-[10px] font-sans font-black uppercase tracking-wider text-brand-gray px-2 py-1">
             PWA Workspace Modules
           </div>
@@ -210,7 +210,7 @@ export default function Dashboard({
           2. USER INFO DOSSIER BADGE
           Guaranteed zero-overflow container with truncated identity & flex-wrapped demo chips
         */}
-        <div className="mt-auto pt-3 border-t-2 border-brand-navy/20">
+        <div className="mt-auto shrink-0 pt-3 border-t-2 border-brand-navy/20">
           <div className="bg-brand-white border-2 border-brand-navy sketchy-box shadow-sketch p-3 space-y-2.5 max-w-full overflow-hidden">
             
             {/* Identity Row */}
@@ -282,7 +282,7 @@ export default function Dashboard({
       {/* 
         3. MAIN WORKSPACE WITH UNIVERSAL DITTO TYPOGRAPHY
       */}
-      <main className="flex-1 min-w-0 flex flex-col min-h-screen bg-brand-cream/60" ref={mainRef}>
+      <main className="flex-1 min-w-0 flex flex-col min-h-screen bg-brand-cream/60 md:ml-72 lg:ml-80" ref={mainRef}>
         
         {/* Sticky Top Dossier Header */}
         <header className="sticky top-0 z-20 bg-brand-cream/95 backdrop-blur-md border-b-2 border-brand-navy px-4 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
