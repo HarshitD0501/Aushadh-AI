@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useScrollReveal, useScrollCountUp } from "@/lib/gsap";
@@ -264,6 +266,26 @@ export default function Landing({
             >
               Launch App / PWA <ArrowRight size={14} />
             </Link>
+              className="sketchy-btn bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy px-4 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover flex items-center gap-1.5"
+            >
+              <Tag size={13} className="text-brand-orange" />
+              <span>PWA Tool</span>
+            </Link>
+            {patient ? (
+              <button
+                onClick={onOpenDashboard}
+                className="sketchy-btn bg-brand-orange text-brand-navy border-2 border-brand-navy px-6 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover hover:translate-x-[2px] hover:translate-y-[2px] flex items-center gap-2"
+              >
+                Open Dashboard <ArrowRight size={14} />
+              </button>
+            ) : (
+              <button
+                onClick={() => onSelectDemo("ramesh")}
+                className="sketchy-btn bg-brand-orange text-brand-navy border-2 border-brand-navy px-6 py-2.5 text-xs font-bold tracking-widest uppercase shadow-sketch hover:shadow-sketch-hover hover:translate-x-[2px] hover:translate-y-[2px] flex items-center gap-2"
+              >
+                Launch App / PWA <ArrowRight size={14} />
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Icon / Fast Trigger */}
@@ -333,6 +355,17 @@ export default function Landing({
               <span className="flex items-center gap-1.5"><MessageCircleHeart size={16} className="text-brand-orange" /> WhatsApp Bot</span>
             </div>
           </div>
+
+          
+            <div className="pt-2">
+              <Link
+                href="/app"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy font-sans font-bold text-xs uppercase tracking-wider sketchy-btn shadow-sketch hover:shadow-sketch-hover transition-all"
+              >
+                <Tag className="w-4 h-4 text-brand-orange" />
+                <span>Open Instant PWA Tool (/app) →</span>
+              </Link>
+            </div>
 
           {/* Right: Player Card */}
           <div className="lg:col-span-6 relative flex items-center justify-center lg:justify-end reveal delay-100 active">

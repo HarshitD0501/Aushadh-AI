@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import "leaflet/dist/leaflet.css";
 
 export default function LazyStoreMap({
   stores = [],
@@ -113,7 +114,6 @@ export default function LazyStoreMap({
       }
 
       if (activeRoute && activeRoute.geometry && activeRoute.geometry.coordinates) {
-        // GeoJSON uses [lng, lat], Leaflet uses [lat, lng]
         const latLngs = activeRoute.geometry.coordinates.map((coord) => [coord[1], coord[0]]);
         const polyline = L.polyline(latLngs, {
           color: "#1a2234",

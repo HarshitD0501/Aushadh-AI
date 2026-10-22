@@ -101,6 +101,7 @@ export default function Navbar({ onTabChange, activeTab, inAppShell = false }) {
           </button>
 
           {/* Action Button: In App -> Return to Landing | In Landing -> Launch PWA */}
+          {/* Action Button */}
           {isShell ? (
             <Link
               href="/"

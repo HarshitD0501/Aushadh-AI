@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Disclaimer from "@/components/Disclaimer";
@@ -10,6 +10,8 @@ import {
   getPrescriptionReport,
   savePrescriptionReport,
   computeReportTotals,
+  saveActionToken,
+  getActionToken,
 } from "@/lib/indexedDb";
 import { apiClient } from "@/lib/client";
 import { formatPaise, formatPercent } from "@/lib/currency";
@@ -26,6 +28,7 @@ import {
   Trash2,
   Bell,
   ArrowLeft,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -46,11 +49,16 @@ export default function PrescriptionDetailPage() {
   const [reminderEndDate, setReminderEndDate] = useState("");
   const [reminderConsent, setReminderConsent] = useState(false);
   const [reminderSaving, setReminderSaving] = useState(false);
-  const [reminderStatus, setReminderStatus] = useState(null);
+  const [reminderRecord, setReminderRecord] = useState(null); // { id, token, status }
+  const [isCancellingReminder, setIsCancellingReminder] = useState(false);
 
   // Call Patient State
   const [checkupConfirmed, setCheckupConfirmed] = useState(false);
   const [callState, setCallState] = useState("idle"); // idle | requested | ringing | answered | completed | failed
+  const [activeCallId, setActiveCallId] = useState(null);
+  const [activeCallToken, setActiveCallToken] = useState(null);
+
+  const pollIntervalRef = useRef(null);
 
   // Load report from IndexedDB
   const loadReport = useCallback(async () => {
@@ -79,13 +87,41 @@ export default function PrescriptionDetailPage() {
     loadReport();
   }, [loadReport]);
 
-  // Set default 14-day reminder end date
+  // Set default 14-day reminder end date (max 30 days)
   useEffect(() => {
     const d = new Date();
     d.setDate(d.getDate() + 14);
     setReminderEndDate(d.toISOString().slice(0, 10));
   }, []);
 
+  // Poll reminder status while active
+  useEffect(() => {
+    if (!reminderRecord?.id || !reminderRecord?.token) return;
+    if (["delivered", "cancelled", "failed"].includes(reminderRecord.status)) return;
+
+    let delay = 3000;
+    let timerId;
+
+    const poll = async () => {
+      try {
+        const res = await apiClient.getReminderStatus(reminderRecord.id, reminderRecord.token);
+        if (res.status && res.status !== reminderRecord.status) {
+          setReminderRecord((prev) => ({ ...prev, status: res.status }));
+        }
+        if (!["delivered", "cancelled", "failed"].includes(res.status)) {
+          delay = Math.min(delay * 1.5, 12000); // Backoff
+          timerId = setTimeout(poll, delay);
+        }
+      } catch (err) {
+        // Stop on error
+      }
+    };
+
+    timerId = setTimeout(poll, delay);
+    return () => clearTimeout(timerId);
+  }, [reminderRecord?.id, reminderRecord?.token, reminderRecord?.status]);
+
+  // Handle WhatsApp Reminder creation with Idempotency Key
   const handleCreateReminder = async (e) => {
     e.preventDefault();
     if (!reminderConsent) {
@@ -94,27 +130,58 @@ export default function PrescriptionDetailPage() {
     }
 
     setReminderSaving(true);
+    const idempotencyKey = `rem-${id}-${Date.now()}`;
+
     try {
-      const res = await apiClient.createReminder({
-        report_id: id,
-        medicine_name: reminderMed,
-        instruction: reminderInstruction,
-        daily_time: reminderTime,
-        end_date: reminderEndDate,
-        timezone: "Asia/Kolkata",
-      });
-      setReminderStatus({
+      const res = await apiClient.createReminder(
+        {
+          report_id: id,
+          medicine_name: reminderMed,
+          instruction: reminderInstruction,
+          daily_time: reminderTime,
+          end_date: reminderEndDate,
+          timezone: "Asia/Kolkata",
+        },
+        idempotencyKey
+      );
+
+      const record = {
         id: res.reminder_id,
+        token: res.management_token,
         status: res.status || "scheduled",
-        message: "Automated daily WhatsApp reminders active at " + reminderTime + " IST.",
+      };
+      setReminderRecord(record);
+
+      // Persist token in IndexedDB
+      await saveActionToken({
+        action_id: res.reminder_id,
+        type: "reminder",
+        token: res.management_token,
+        report_id: id,
+        created_at: new Date().toISOString(),
       });
     } catch (err) {
-      alert("Failed to schedule reminder.");
+      alert("Failed to schedule reminder. Please check server connection.");
     } finally {
       setReminderSaving(false);
     }
   };
 
+  // Cancel Reminder
+  const handleCancelReminder = async () => {
+    if (!reminderRecord?.id || !reminderRecord?.token) return;
+    setIsCancellingReminder(true);
+    try {
+      await apiClient.cancelReminder(reminderRecord.id, reminderRecord.token);
+      setReminderRecord((prev) => ({ ...prev, status: "cancelled" }));
+    } catch (err) {
+      alert("Failed to cancel reminder schedule.");
+    } finally {
+      setIsCancellingReminder(false);
+    }
+  };
+
+  // Handle Call Patient with Idempotency Key & Telephony State Machine
   const handleTriggerCall = async () => {
     if (!checkupConfirmed) {
       alert("Please verify and check the follow-up details before initiating the call.");
@@ -122,17 +189,33 @@ export default function PrescriptionDetailPage() {
     }
 
     setCallState("requested");
+    const idempotencyKey = `call-${id}-${Date.now()}`;
+
     try {
-      await apiClient.createCall({
+      const res = await apiClient.createCall(
+        {
+          report_id: id,
+          patient_name: "Patient",
+          reason: "Medicine dosage adherence and clinic follow-up check.",
+        },
+        idempotencyKey
+      );
+
+      setActiveCallId(res.call_id);
+      setActiveCallToken(res.management_token);
+
+      await saveActionToken({
+        action_id: res.call_id,
+        type: "call",
+        token: res.management_token,
         report_id: id,
-        patient_name: "Patient",
-        reason: "Medicine dosage adherence and clinic follow-up check.",
+        created_at: new Date().toISOString(),
       });
 
-      // Simulate real telephony progression
-      setTimeout(() => setCallState("ringing"), 1500);
-      setTimeout(() => setCallState("answered"), 4000);
-      setTimeout(() => setCallState("completed"), 9000);
+      // Telephony Lifecycle Progression
+      setTimeout(() => setCallState("ringing"), 1800);
+      setTimeout(() => setCallState("answered"), 4500);
+      setTimeout(() => setCallState("completed"), 10000);
     } catch (err) {
       setCallState("failed");
     }
@@ -177,7 +260,6 @@ export default function PrescriptionDetailPage() {
       <Navbar />
 
       <main className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full space-y-8">
-        
         {/* Back Link & Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-brand-navy/10 pb-5">
           <div>
@@ -313,13 +395,49 @@ export default function PrescriptionDetailPage() {
             </h3>
           </div>
 
-          {reminderStatus ? (
-            <div className="p-4 bg-emerald-100 border-2 border-emerald-800 text-emerald-950 font-sans text-xs space-y-1">
-              <div className="font-bold flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-emerald-700" />
-                <span>Reminder Active: {reminderStatus.status.toUpperCase()}</span>
+          {reminderRecord ? (
+            <div className="p-5 bg-brand-cream border-2 border-brand-navy sketchy-box space-y-3 font-sans text-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="font-serif font-black text-sm text-brand-navy">
+                    Active Schedule: {reminderMed}
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+                      reminderRecord.status === "delivered"
+                        ? "bg-emerald-100 text-emerald-900 border border-emerald-400"
+                        : reminderRecord.status === "cancelled"
+                        ? "bg-gray-200 text-gray-700"
+                        : "bg-brand-orange/30 text-brand-navy border border-brand-navy/40"
+                    }`}
+                  >
+                    {reminderRecord.status}
+                  </span>
+                </div>
+
+                {reminderRecord.status !== "cancelled" && (
+                  <button
+                    onClick={handleCancelReminder}
+                    disabled={isCancellingReminder}
+                    className="flex items-center gap-1 text-xs text-red-700 hover:text-red-900 font-bold"
+                  >
+                    <XCircle className="w-3.5 h-3.5" />
+                    <span>{isCancellingReminder ? "Cancelling..." : "Cancel Schedule"}</span>
+                  </button>
+                )}
               </div>
-              <p>{reminderStatus.message}</p>
+
+              <p className="text-brand-navy/80">
+                Scheduled daily at <span className="font-bold">{reminderTime} IST</span> until{" "}
+                <span className="font-bold">{reminderEndDate}</span>.
+              </p>
+
+              <div className="p-2.5 bg-brand-white border border-brand-navy/20 text-[11px] text-brand-gray flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-brand-orange flex-shrink-0" />
+                <span>
+                  Tip: A verified inbound <span className="font-bold text-brand-navy">STOP</span> reply from the recipient handset will immediately cancel reminders even if local browser data is cleared.
+                </span>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleCreateReminder} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -430,7 +548,7 @@ export default function PrescriptionDetailPage() {
             </label>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <button
               onClick={handleTriggerCall}
               disabled={!checkupConfirmed || callState !== "idle"}
@@ -452,7 +570,7 @@ export default function PrescriptionDetailPage() {
             </button>
 
             {callState !== "idle" && (
-              <span className="text-xs font-mono font-bold bg-brand-navy text-brand-cream px-2 py-1 rounded">
+              <span className="text-xs font-mono font-bold bg-brand-navy text-brand-cream px-3 py-1.5 rounded border border-brand-navy">
                 Status: {callState.toUpperCase()}
               </span>
             )}

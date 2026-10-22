@@ -1,7 +1,7 @@
 import "./globals.css";
-import "leaflet/dist/leaflet.css";
 import Script from "next/script";
 import AuraBackground from "@/components/reactbits/AuraBackground";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 export const metadata = {
   title: "Aushadh-AI — Aapki Dawai, Sahi Daam",
@@ -12,6 +12,9 @@ export const metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "Aushadh-AI",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 };
 
@@ -28,8 +31,9 @@ export default function RootLayout({ children }) {
         {/* Global Paper Texture Overlay */}
         <div className="fixed inset-0 pointer-events-none z-50 bg-paper-texture mix-blend-multiply" />
         <AuraBackground />
-        {children}
-        <Script src="https://code.iconify.design/3/3.1.0/iconify.min.js" strategy="lazyOnload" />
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
         <Script id="sw-register" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {

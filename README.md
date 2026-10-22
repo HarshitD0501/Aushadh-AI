@@ -1,8 +1,7 @@
-# AushadhAi
-
+# Aushadh](../../../../../Downloads/Git_Team_Workflow_Guide.pdf)
 **Make the cost of medicine visible before it is paid.**
 
-This repository is the documentation-first starting point for a three-person hackathon team. The application code has **not** been created yet. The first working milestone is simple: enter a brand or molecule, tolerate misspellings, and show a **verified, like-for-like** branded price against a Jan Aushadhi price with the saving as the headline. If the data is missing or the strength/form/pack does not match, the product must say so instead of calculating a saving.
+This repository is the starting point for a three-person hackathon team. The backend B0 API foundation is runnable; the medicine catalogue and user-facing features are still to be built. The first working product milestone is simple: enter a brand or molecule, tolerate misspellings, and show a **verified, like-for-like** branded price against a Jan Aushadhi price with the saving as the headline. If the data is missing or the strength/form/pack does not match, the product must say so instead of calculating a saving.
 
 > **Medical boundary:** Price and molecule information only. **Informational only — confirm with doctor or pharmacist before substituting.** OCR, Gemma, Groq and the voice agent cannot prescribe, infer a dosage, or invent a composition or price.
 
@@ -45,7 +44,7 @@ These are implementation targets, not proof that the integrations are already li
 
 ## Local development and deployment order
 
-There are no runnable services yet. After owners complete their F0/B0/A0 phases:
+The backend B0 foundation is runnable; the PWA, medicine catalogue, and voice worker are still pending. See [`backend/README.md`](backend/README.md) for local backend commands. As the remaining phases are completed:
 
 1. Backend owner publishes the versioned API contract and safe `.env.example`; frontend uses a local API base URL. Agent uses a private backend URL and its own secret.
 2. Start Neon or a local PostgreSQL instance, then FastAPI, then the PWA. Start the LiveKit worker only for voice testing. Run the backend dataset checks before connecting the UI.
@@ -60,8 +59,10 @@ See [`docs/DEMO_RUNBOOK.md`](docs/DEMO_RUNBOOK.md) for the real phone demo and f
 ## Source and tool credits
 
 - Drug/product source to verify and cite per row: [PMBI Jan Aushadhi product list](https://janaushadhi.gov.in/product-portfolio/product-view-list).
+- Three locally curated product prices come from a user-supplied [official PMBI product-list](https://janaushadhi.gov.in/product-portfolio/product-view-list) CSV export dated 21 October 2026. A [Pharma Sahi Daam](https://nppaipdms.gov.in/NPPA/PharmaSahiDaam/searchMedicine) screenshot supplies one exact A2B 40 mg branded pack MRP; the applicable NPPA ceiling has its own [Gazette reference](https://nppa.gov.in/uploads/tender/0fd8be342c35d5a46a13b281cadc5e4f.pdf). The full PMBI export stays local pending redistribution permission. The owner reviewed the A2B pair; the other two rows await review.
 - NPPA ceiling and available market-price lookup: [Pharma Sahi Daam](https://nppaipdms.gov.in/NPPA/PharmaSahiDaam/searchMedicine). Brand MRP must also carry its own dated evidence when used.
 - OCR: [Tesseract](https://tesseract-ocr.github.io/); fuzzy search: [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz).
+- Backend framework and configuration: [FastAPI](https://fastapi.tiangolo.com/), [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/), [Uvicorn](https://www.uvicorn.org/); catalogue validation: [jsonschema](https://python-jsonschema.readthedocs.io/); API test client: [Starlette](https://www.starlette.io/testclient/).
 - Maps: [Leaflet](https://leafletjs.com/), [OpenStreetMap](https://www.openstreetmap.org/copyright), [OSM tile policy](https://operations.osmfoundation.org/policies/tiles/), [OSRM API](https://project-osrm.org/docs/v5.5.1/api/).
 - Voice: [LiveKit outbound SIP](https://docs.livekit.io/telephony/making-calls/outbound-calls/), [LiveKit Groq plugin](https://docs.livekit.io/agents/models/llm/groq/), [LiveKit Murf plugin reference](https://docs.livekit.io/reference/python/livekit/plugins/murf/index.html), [Twilio](https://www.twilio.com/docs/voice).
 - Messaging: [Meta WhatsApp Business Platform](https://developers.facebook.com/docs/whatsapp/cloud-api/), [WhatsApp pricing](https://whatsappbusiness.com/products/platform-pricing/).
@@ -72,6 +73,8 @@ If any provider rule or API changes, update the owner README and this credit lis
 ## Project status
 
 - [x] Product boundaries and three-owner handoff documented.
+- [x] Backend B0 health, capabilities, configuration and error foundation implemented.
+- [x] Backend B1 catalogue schema and validator implemented; one PMBJP/A2B pair reviewed with separate NPPA ceiling. Two rows remain incomplete.
 - [ ] Runnable PWA, API, agent and verified medicine dataset.
 - [ ] Real WhatsApp delivery and real Twilio/LiveKit call demonstrated.
 

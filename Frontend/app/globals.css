@@ -468,6 +468,7 @@ button { font-family: inherit; }
   position: sticky;
   top: 0;
   height: 100dvh;
+  overflow-y: auto;
   z-index: 10;
 }
 
@@ -2455,8 +2456,8 @@ html { scroll-behavior: smooth; }
    section carries its own accent; grouped nav with labels.
    ============================================================ */
 .sidebar {
-  background: linear-gradient(180deg, #0f172a 0%, #111c33 100%);
-  border-right: none;
+  background: var(--brand-cream);
+  border-right: 2px solid var(--brand-navy);
   gap: 2px;
   padding: 22px 14px;
 }
@@ -2486,7 +2487,7 @@ html { scroll-behavior: smooth; }
 }
 .home-link:hover {
   background: rgba(168, 162, 153, 0.16);
-  color: #f1f5f9;
+  color: var(--brand-navy);
 }
 .nav-group { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; }
 .nav-group-label {
@@ -2577,7 +2578,7 @@ html { scroll-behavior: smooth; }
 .who-meta .nm {
   font-weight: 700;
   font-size: 13.5px;
-  color: #f1f5f9;
+  color: var(--brand-navy);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3379,12 +3380,12 @@ body {
 
 .sidebar {
   background: #f5f2eb !important;
-  border-right: 2px solid rgba(26, 34, 52, 0.12) !important;
+  border-right: 2px solid #1a2234 !important;
 }
 
 .topbar {
   background: rgba(245, 242, 235, 0.95) !important;
-  border-bottom: 2px solid rgba(26, 34, 52, 0.1) !important;
+  border-bottom: 2px solid #1a2234 !important;
 }
 
 .nav-item.active {
@@ -3396,9 +3397,9 @@ body {
 }
 
 .who-card {
-  background: #1a2234 !important;
-  color: #f5f2eb !important;
+  background: #ffffff !important;
+  color: #1a2234 !important;
   border: 2px solid #1a2234 !important;
   border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
-  box-shadow: 4px 4px 0px 0px #e8a838 !important;
+  box-shadow: 4px 4px 0px 0px #1a2234 !important;
 }

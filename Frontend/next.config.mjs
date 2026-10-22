@@ -6,6 +6,12 @@ const AGENT = process.env.AGENT_ORIGIN || "http://127.0.0.1:8081";
 
 const nextConfig = {
   reactStrictMode: true,
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...(config.externals || []), "leaflet"];
+    }
+    return config;
+  },
   async rewrites() {
     return [
       { source: "/agent/:path*", destination: `${AGENT}/:path*` },

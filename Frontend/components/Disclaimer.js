@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldAlert, AlertCircle } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Disclaimer({ compact = false }) {
@@ -9,15 +9,23 @@ export default function Disclaimer({ compact = false }) {
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 p-3 bg-brand-peach/20 border border-brand-navy/30 text-xs text-brand-navy/90 rounded-sm">
+      <aside
+        role="note"
+        aria-label="Medical notice"
+        className="flex items-center gap-2 p-3 bg-brand-peach/20 border border-brand-navy/30 text-xs text-brand-navy/90 rounded-sm"
+      >
         <ShieldAlert className="w-4 h-4 text-brand-orange flex-shrink-0" />
         <span className="font-sans font-medium">{t.disclaimerText}</span>
-      </div>
+      </aside>
     );
   }
 
   return (
-    <div className="p-4 sm:p-5 bg-brand-peach/30 border-2 border-brand-navy sketchy-box shadow-sketch my-6">
+    <aside
+      role="note"
+      aria-label="Medical notice"
+      className="p-4 sm:p-5 bg-brand-peach/30 border-2 border-brand-navy sketchy-box shadow-sketch my-6"
+    >
       <div className="flex items-start gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-orange/30 border-2 border-brand-navy flex items-center justify-center flex-shrink-0 mt-0.5">
           <ShieldAlert className="w-5 h-5 text-brand-navy" />
@@ -34,6 +42,6 @@ export default function Disclaimer({ compact = false }) {
           </p>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
