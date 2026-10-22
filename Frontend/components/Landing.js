@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useScrollReveal, useScrollCountUp } from "@/lib/gsap";
 import { DEMO_USERS, getPublicPrices, login } from "@/lib/api";
 import {
@@ -285,7 +286,7 @@ export default function Landing({
 
           {/* Mobile Menu Icon / Fast Trigger */}
           <button
-            onClick={() => onSelectDemo("ramesh")}
+            onClick={() => window.location.href = "/app"}
             className="md:hidden sketchy-btn bg-brand-orange text-brand-navy border-2 border-brand-navy px-4 py-2 text-xs font-bold uppercase tracking-widest shadow-sketch"
           >
             Launch App
@@ -329,11 +330,11 @@ export default function Landing({
 
             <div className="flex flex-wrap items-center gap-6 pt-4">
               <button
-                onClick={() => onSelectDemo("ramesh")}
+                onClick={() => window.location.href = "/app"}
                 className="sketchy-btn bg-brand-orange text-brand-navy border-2 border-brand-navy px-8 py-4 font-bold text-xs uppercase tracking-widest shadow-sketch hover:shadow-sketch-hover hover:translate-x-[2px] hover:translate-y-[2px] flex items-center gap-3"
               >
                 <Play className="w-4 h-4 fill-current" />
-                Launch Live App (Ramesh)
+                Launch PWA Workspace
               </button>
               <a
                 href="#problem"
@@ -616,7 +617,7 @@ export default function Landing({
             {FEATURE_DOSSIERS.map((d, idx) => (
               <article
                 key={d.key}
-                onClick={() => onSelectDemo("ramesh")}
+                onClick={() => window.location.href = "/app"}
                 className="group cursor-pointer reveal active"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
@@ -745,7 +746,7 @@ export default function Landing({
                 </ul>
 
                 <button
-                  onClick={() => onSelectDemo(tier.demoId)}
+                  onClick={() => window.location.href = "/app"}
                   className={`w-full py-4 text-xs font-bold uppercase tracking-widest sketchy-btn border-2 border-brand-navy flex items-center justify-center gap-2 ${
                     tier.highlight
                       ? "bg-brand-orange text-brand-navy shadow-sketch hover:shadow-sketch-hover hover:translate-x-[2px] hover:translate-y-[2px]"
