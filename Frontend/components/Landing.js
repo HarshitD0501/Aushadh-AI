@@ -3,7 +3,6 @@
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useScrollReveal, useScrollCountUp } from "@/lib/gsap";
 import { DEMO_USERS, getPublicPrices, login } from "@/lib/api";
 import {
