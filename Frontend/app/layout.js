@@ -13,6 +13,9 @@ export const metadata = {
     statusBarStyle: "default",
     title: "Aushadh-AI",
   },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport = {
@@ -31,7 +34,6 @@ export default function RootLayout({ children }) {
         <LanguageProvider>
           {children}
         </LanguageProvider>
-        <Script src="https://code.iconify.design/3/3.1.0/iconify.min.js" strategy="lazyOnload" />
         <Script id="sw-register" strategy="afterInteractive">
           {`
             if ('serviceWorker' in navigator) {
