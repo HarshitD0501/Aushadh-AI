@@ -10,8 +10,11 @@ import {
   Prices,
   Reports,
 } from "@/components/sections";
-import Pharmacies from "@/components/Pharmacies";
 import Assistant from "@/components/Assistant";
+import SearchPage from "@/app/search/page";
+import ScanPage from "@/app/scan/page";
+import StoresPage from "@/app/stores/page";
+import HistoryPage from "@/app/history/page";
 import {
   Activity,
   UploadCloud,
@@ -26,6 +29,7 @@ import {
   Bot,
   Home,
   Users,
+  Search,
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
@@ -33,7 +37,7 @@ import Link from "next/link";
 const SECTIONS = [
   {
     key: "summary",
-    label: "Overview",
+    label: "Health Overview",
     Icon: Activity,
     Comp: Summary,
     title: "Health Overview",
@@ -44,16 +48,26 @@ const SECTIONS = [
     label: "Ask Sahayak",
     Icon: Bot,
     Comp: Assistant,
-    title: "Voice Assistant",
-    sub: "Talk or type to ask about your medicines, interactions, prices and next visit.",
+    title: "Sahayak Voice Assistant",
+    sub: "Real-time 2-way WebRTC live voice consultation & multilingual health assistant.",
   },
   {
-    key: "upload",
-    label: "Upload Script",
+    key: "search",
+    label: "Search & Compare",
+    Icon: Search,
+    Comp: ({ goto }) => <SearchPage hideNavbar={true} onNavigateTab={goto} />,
+    title: "Jan Aushadhi Price Discovery",
+    sub: "Verify Jan Aushadhi (PMBJP) generic alternatives against branded MRP and NPPA caps.",
+    isTool: true,
+  },
+  {
+    key: "scan",
+    label: "Scan Prescription",
     Icon: UploadCloud,
-    Comp: Upload,
-    title: "Upload Prescription",
-    sub: "Snap or pick a photo — Gemini Vision extracts meds, you confirm safety.",
+    Comp: ({ goto }) => <ScanPage hideNavbar={true} onNavigateTab={goto} />,
+    title: "Scan & OCR Review",
+    sub: "Upload or photograph a medicine box or prescription for OCR review and manual verification.",
+    isTool: true,
   },
   {
     key: "medicines",
@@ -68,40 +82,46 @@ const SECTIONS = [
     label: "Safety Check",
     Icon: ShieldAlert,
     Comp: Interactions,
-    title: "Drug Interaction Safety Check",
-    sub: "Automated conflict detection to prevent dangerous drug-drug interactions.",
+    title: "Drug Conflict Safety Check",
+    sub: "Automated conflict detection across 300,000+ interactions to prevent dangerous drug combinations.",
   },
   {
-    key: "prices",
-    label: "Price Comparison",
-    Icon: Tag,
-    Comp: Prices,
-    title: "Fair Price Comparison",
-    sub: "Real-time pricing across trusted Indian pharmacy partners.",
-  },
-  {
-    key: "pharmacies",
-    label: "Nearby Chemists",
+    key: "stores",
+    label: "Find Kendra",
     Icon: MapPin,
-    Comp: Pharmacies,
-    title: "Nearby Pharmacies",
-    sub: "Find local stores, confirm stock, and get instant turn-by-turn directions.",
+    Comp: ({ goto }) => <StoresPage hideNavbar={true} onNavigateTab={goto} />,
+    title: "Jan Aushadhi Kendra Locator",
+    sub: "Locate genuine PMBJP Kendras with verified addresses, opening hours, and driving routes.",
+    isTool: true,
   },
   {
-    key: "reports",
-    label: "Records & History",
+    key: "history",
+    label: "Saved History",
     Icon: FileText,
-    Comp: Reports,
-    title: "Prescription History",
-    sub: "Secure archival of all uploaded prescriptions and doctor notes.",
+    Comp: ({ goto }) => <HistoryPage hideNavbar={true} onNavigateTab={goto} />,
+    title: "Device-Local Report History",
+    sub: "Locally stored prescription summaries on this device with printable chemist counter slips.",
+    isTool: true,
   },
 ];
 
-export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient }) {
-  const [active, setActive] = useState("summary");
+export default function Dashboard({
+  patient,
+  onLogout,
+  onGoHome,
+  onSwitchPatient,
+  initialSection = "summary",
+}) {
+  const [active, setActive] = useState(initialSection);
   const mainRef = useRef(null);
   const current = SECTIONS.find((s) => s.key === active) || SECTIONS[0];
   const Comp = current.Comp;
+
+  useEffect(() => {
+    if (initialSection && SECTIONS.some((s) => s.key === initialSection)) {
+      setActive(initialSection);
+    }
+  }, [initialSection]);
 
   // GSAP smooth section entrance
   useEffect(() => {
@@ -110,8 +130,8 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
     const ctx = gsap.context(() => {
       gsap.fromTo(
         el,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.28, ease: "power2.out" }
       );
     }, el);
     return () => ctx.revert();
@@ -129,13 +149,13 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
   return (
     <div className="min-h-screen bg-brand-cream text-brand-navy flex flex-col md:flex-row relative">
       {/* 
-        1. STATIONARY LEFT VERTICAL NAVBAR
-        Docked as an individual stationary section that never moves on scrolls
+        1. STATIONARY LEFT VERTICAL NAVBAR DOCK
+        Firmly anchored on scrolls, distinct individual section with 2px ink divider
       */}
       <aside className="w-full md:w-72 lg:w-80 md:h-screen md:sticky md:top-0 bg-brand-cream border-b-2 md:border-b-0 md:border-r-2 border-brand-navy flex flex-col p-4 md:p-5 z-30 overflow-y-auto shrink-0 select-none shadow-sm">
         
         {/* Brand Lockup Header */}
-        <div className="flex items-center gap-3 pb-4 border-b-2 border-brand-navy/15">
+        <div className="flex items-center gap-3 pb-3.5 border-b-2 border-brand-navy/15">
           <div className="w-10 h-10 bg-brand-orange text-brand-navy border-2 border-brand-navy sketchy-box flex items-center justify-center shadow-sketch-hover">
             <Compass className="w-6 h-6 stroke-[2.2]" />
           </div>
@@ -149,30 +169,23 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
           </div>
         </div>
 
-        {/* Quick Nav Switches: Presentation / PWA Tool */}
-        <div className="grid grid-cols-2 gap-2 my-3">
-          {onGoHome && (
-            <button
-              onClick={onGoHome}
-              className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy font-sans font-bold text-[11px] uppercase tracking-wider sketchy-btn shadow-sketch transition-all"
-              title="Return to Presentation Landing Page"
-            >
-              <Home className="w-3.5 h-3.5 text-brand-orange shrink-0" />
-              <span className="truncate">Showcase</span>
-            </button>
-          )}
-          <Link
-            href="/app"
-            className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-brand-orange text-brand-navy border-2 border-brand-navy font-sans font-bold text-[11px] uppercase tracking-wider sketchy-btn shadow-sketch transition-all text-center"
-            title="Open PWA Medicine Price Engine"
+        {/* Presentation Return Button */}
+        {onGoHome && (
+          <button
+            onClick={onGoHome}
+            className="my-3 w-full flex items-center justify-center gap-2 px-3 py-2 bg-brand-white hover:bg-brand-peach/30 text-brand-navy border-2 border-brand-navy font-sans font-black text-xs uppercase tracking-wider sketchy-btn shadow-sketch hover:shadow-sketch-hover transition-all"
+            title="Return to Presentation Landing Page"
           >
-            <Tag className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">PWA App</span>
-          </Link>
-        </div>
+            <Home className="w-3.5 h-3.5 text-brand-orange shrink-0" />
+            <span className="truncate">← Presentation Showcase</span>
+          </button>
+        )}
 
-        {/* Navigation Dossier File Tabs */}
-        <nav className="my-2 space-y-1 flex-1 overflow-y-auto pr-1">
+        {/* Navigation Dossier Section Tabs */}
+        <nav className="my-1 space-y-1 flex-1 overflow-y-auto pr-1">
+          <div className="text-[10px] font-sans font-black uppercase tracking-wider text-brand-gray px-2 py-1">
+            PWA Workspace Modules
+          </div>
           {SECTIONS.map((s) => {
             const Icon = s.Icon;
             const isActive = s.key === active;
@@ -272,12 +285,12 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
       <main className="flex-1 min-w-0 flex flex-col min-h-screen bg-brand-cream/60" ref={mainRef}>
         
         {/* Sticky Top Dossier Header */}
-        <header className="sticky top-0 z-20 bg-brand-cream/95 backdrop-blur-md border-b-2 border-brand-navy px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 bg-brand-cream/95 backdrop-blur-md border-b-2 border-brand-navy px-4 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="font-serif font-black text-2xl sm:text-3xl text-brand-navy tracking-tight truncate">
+            <h1 className="font-serif font-black text-xl sm:text-2xl text-brand-navy tracking-tight truncate">
               {current.title}
             </h1>
-            <p className="font-sans text-xs sm:text-sm text-brand-gray font-medium truncate mt-0.5">
+            <p className="font-sans text-xs text-brand-gray font-medium truncate mt-0.5">
               {current.sub}
             </p>
           </div>
@@ -290,7 +303,7 @@ export default function Dashboard({ patient, onLogout, onGoHome, onSwitchPatient
         </header>
 
         {/* Section Dynamic View Container */}
-        <div className="p-4 sm:p-8 flex-1">
+        <div className="p-3 sm:p-6 flex-1">
           <Comp patient={patient} goto={setActive} />
         </div>
       </main>

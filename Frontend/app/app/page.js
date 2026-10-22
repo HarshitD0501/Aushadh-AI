@@ -1,47 +1,136 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
-import SearchPage from "../search/page";
-import ScanPage from "../scan/page";
-import StoresPage from "../stores/page";
-import HistoryPage from "../history/page";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { api, getToken, clearToken, loginAsDemo, setActivePatientId } from "@/lib/api";
+import Dashboard from "@/components/Dashboard";
+import Caregiver from "@/components/Caregiver";
 
-export default function AppShell() {
-  const [activeTab, setActiveTab] = useState("search");
+function AppContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const patientParam = searchParams?.get("patient");
+  const tabParam = searchParams?.get("tab");
 
-  // Read ?tab= from URL query on client
+  const [patient, setPatient] = useState(null);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tabParam = urlParams.get("tab");
-      if (tabParam && ["search", "scan", "stores", "history"].includes(tabParam)) {
-        setActiveTab(tabParam);
+    let alive = true;
+    (async () => {
+      // 1. If explicit ?patient= query, login as that demo patient
+      if (patientParam) {
+        try {
+          const p = await loginAsDemo(patientParam);
+          if (alive) {
+            setPatient(p);
+            setReady(true);
+            return;
+          }
+        } catch (e) {
+          console.warn("Failed to load requested demo patient:", e);
+        }
       }
-    }
-  }, []);
 
-  const handleTabChange = (newTab) => {
-    setActiveTab(newTab);
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location);
-      url.searchParams.set("tab", newTab);
-      window.history.replaceState({}, "", url);
+      // 2. If token exists in storage, verify session
+      if (getToken()) {
+        try {
+          const me = await api("/auth/me");
+          if (alive) {
+            setPatient(me);
+            setReady(true);
+            return;
+          }
+        } catch {
+          clearToken();
+        }
+      }
+
+      // 3. Fallback: Automatically load primary demo patient (Ramesh Kulkarni)
+      // Ensures the PWA workspace is ALWAYS live, populated, and never static!
+      try {
+        const defaultDemo = await loginAsDemo("ramesh");
+        if (alive) {
+          setPatient(defaultDemo);
+          setReady(true);
+        }
+      } catch (err) {
+        console.error("Failed to load default demo patient:", err);
+        if (alive) setReady(true);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [patientParam]);
+
+  const handleLogout = () => {
+    clearToken();
+    setActivePatientId(null);
+    setPatient(null);
+    router.push("/");
+  };
+
+  const handleSwitchPatient = async (patientId) => {
+    try {
+      const p = await loginAsDemo(patientId);
+      setPatient(p);
+      const url = new URL(window.location.href);
+      url.searchParams.set("patient", patientId);
+      window.history.replaceState({}, "", url.toString());
+    } catch (e) {
+      alert("Failed to switch patient: " + (e.message || "Unknown error"));
     }
   };
 
-  return (
-    <div className="min-h-screen bg-brand-cream text-brand-navy flex flex-col">
-      {/* Exactly ONE Unified Navbar in App Mode */}
-      <Navbar onTabChange={handleTabChange} activeTab={activeTab} inAppShell={true} />
-
-      {/* Embedded Active Tool Content */}
-      <div className="flex-1">
-        {activeTab === "search" && <SearchPage hideNavbar={true} onNavigateTab={handleTabChange} />}
-        {activeTab === "scan" && <ScanPage hideNavbar={true} onNavigateTab={handleTabChange} />}
-        {activeTab === "stores" && <StoresPage hideNavbar={true} onNavigateTab={handleTabChange} />}
-        {activeTab === "history" && <HistoryPage hideNavbar={true} onNavigateTab={handleTabChange} />}
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-brand-cream flex flex-col items-center justify-center p-6 text-brand-navy">
+        <div className="w-12 h-12 bg-brand-orange border-2 border-brand-navy sketchy-box shadow-sketch animate-pulse flex items-center justify-center mb-4">
+          <span className="font-serif font-black text-lg">AI</span>
+        </div>
+        <p className="font-serif font-black text-xl tracking-tight">
+          Opening Aushadh-AI PWA Workspace…
+        </p>
+        <p className="font-sans text-xs text-brand-gray mt-1">
+          Loading verified prescriptions and clinical modules
+        </p>
       </div>
-    </div>
+    );
+  }
+
+  if (patient?.role === "caregiver") {
+    return (
+      <Caregiver
+        caregiver={patient}
+        onLogout={handleLogout}
+        onGoHome={() => router.push("/")}
+      />
+    );
+  }
+
+  return (
+    <Dashboard
+      patient={patient}
+      onLogout={handleLogout}
+      onGoHome={() => router.push("/")}
+      onSwitchPatient={handleSwitchPatient}
+      initialSection={tabParam || "summary"}
+    />
+  );
+}
+
+export default function AppShell() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-brand-cream flex items-center justify-center p-6 text-brand-navy">
+          <p className="font-serif font-black text-xl">Opening PWA Workspace…</p>
+        </div>
+      }
+    >
+      <AppContent />
+    </Suspense>
   );
 }
